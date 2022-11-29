@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import indexPageView
-from .views import aboutPageView
+from .views import serumLevelPageView
 from .views import contactPageView
 from .views import pricingPageView
 from .views import bloghomePageView
@@ -10,6 +10,7 @@ from .views import portitemPageView
 from .views import portoverviewPageView
 from .views import register_request
 from .views import login_request
+from .views import serumLevelPageView
 
 urlpatterns = [
     path('login', login_request, name="login"),
@@ -22,7 +23,7 @@ urlpatterns = [
     path('bloghome/', bloghomePageView, name='bloghome'),
     path('pricing/', pricingPageView, name='pricing'),
     path('contact/', contactPageView, name='contact'),
-    path('about/', aboutPageView, name='about'),
+    path('serum_levels/', serumLevelPageView, name='serum_levels'),
     path('', indexPageView, name='index'),
 
 ]

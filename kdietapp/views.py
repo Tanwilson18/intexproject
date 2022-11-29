@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import NewUserForm
 from django.contrib.auth import login, authenticate  # add this
 from django.contrib.auth.forms import AuthenticationForm  # add this
+from .models import serum_levels
 
 
 # Create your views here.
@@ -11,8 +12,12 @@ def indexPageView(request):
     return render(request, 'index.html')
 
 
-def aboutPageView(request):
-    return render(request, 'subpages/about.html')
+def serumLevelPageView(request):
+    data = serum_levels.objects.all()
+    context = {
+        'data': data,
+    }
+    return render(request, 'subpages/serum_levels.html', context)
 
 
 def contactPageView(request):
@@ -67,10 +72,27 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 messages.info(request, f"You are now logged in as {username}.")
-                return redirect("main:homepage")
+                # once logged in automaticallt redirects
+                return redirect("index.html")
             else:
                 messages.error(request, "Invalid username or password.")
         else:
             messages.error(request, "Invalid username or password.")
     form = AuthenticationForm()
     return render(request, 'login.html', context={"login_form": form})
+
+
+"""
+hey there
+def dataRender(request):
+    foodType = None
+    foodType = request.POST.get("foodGroups")
+    search = None
+    search = request.POST.get("SearchFood")
+    parameters = {
+        'api_key': '9aSh1S0uTOlVQKP7ZDzmnjgGWYDfOmzK5RnZxcxQ',
+        'query': query
+    }
+    if search != None:
+
+"""
