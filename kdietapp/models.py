@@ -2,17 +2,18 @@ from django.db import models
 
 # Create your models here.
 # class user(models.Model):
-#     username = models.CharField(max_length=50)
+#     username = models.CharField(max_length=50, primary_key=True, Null=False)
 #     password = models.CharField(max_length=50)
 #     first_name = models.CharField(max_length=50)
 #     last_name = models.CharField(max_length=50)
-#     phone_number = models.IntegerField(max_length=11)
+#     phone_number = models.IntegerField(max_length=14)
 #     birth_date = models.DateField()
-#     gender = models.CharField(max_length=20)
-#     street_address = models.CharField(max_length=150)
+#     sex = models.CharField(max_length=10)
+#     street_address = models.CharField(max_length=50)
 #     city = models.CharField(max_length=50)
-#     state = models.CharField(max_length=50)
+#     state = models.CharField(max_length=2)
 #     zipcode = models.IntegerField()
+#     email = models.EmailField()
 #     weight_lbs = models.FloatField()
 #     height_inches = models.FloatField()
 
@@ -27,12 +28,13 @@ from django.db import models
 #     creatinine_level = models.FloatField()
 #     albumin_level = models.FloatField()
 #     blood_sugar_level = models.FloatField()
-
+#     username = models.ForeignKey(user, on_delete=models.DO_NOTHING)
+#
 #     class Meta:
 #         db_table = 'serum_levels'
 
 # class food_diary(models.Model) :
-#     date = models.DateField()
+#     date = models.DateField(default=date.today)
 
 #     class Meta:
 #         db_table = 'food_diary'
@@ -49,6 +51,9 @@ from django.db import models
 #     amount = models.CharField(max_length=50)
 #     measurement = models.CharField(max_length=50)
 
+#     class Meta:
+#          db_table = 'food'
+
 # class micronutrient_info(models.Model) :
 #     mg_sodium = models.FloatField()
 #     g_protein = models.FloatField()
@@ -56,3 +61,6 @@ from django.db import models
 #     mg_potassium = models.FloatField()
 #     mg_phosphorus = models.FloatField()
 #     calories = models.FloatField()
+
+#     class Meta:
+#          db_table = 'micronutrient_info'
