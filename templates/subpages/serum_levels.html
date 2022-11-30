@@ -33,91 +33,71 @@
 </div>
 
 <!-- blood sugar visualization section -->
-<canvas id="myChart" width="400" height="100"></canvas>
+<canvas id="myChart" width="400" height="400"></canvas>
 <script>
-const ctx = document.getElementById('myChart').getContext('2d');
-const myChart = new Chart(ctx{
-    type: "line",
-    data: {
-        labels: [{% for data in data %} '{{data.results_date}}', {% endfor %}],
-        datasets: [{
-            label : 'Potassium Levels',
-            data: [{% for data in serum_levels %} {{data.potassium_level}}, {% endfor %}],
-            borderColor: "red",
-            fill: false
-        },
-        {
-            label : 'Phosphorous Levels',
-            data: [{% for data in serum_levels %} {{data.phosphorous_level}}, {% endfor %}],
-            borderColor: "green",
-            fill: false
-        },
-        {
-            label : 'Sodium Level',
-            data: [{% for data in serum_levels %} {{data.sodium_level}}, {% endfor %}],
-            borderColor: "blue",
-            fill: false
-         },
-         {
-            label : 'Creatinine Level',
-            data: [{% for data in serum_levels %} {{data.creatinine_level}}, {% endfor %}],
-            borderColor: "yellow",
-            fill: false
-         },
-         {
-            label : 'Albumin Level',
-            data: [{% for data in serum_levels %} {{data.albumin_level}}, {% endfor %}],
-            borderColor: "purple",
-            fill: false
-         },
-         {
-            label : 'Blood Sugar Level',
-            data: [{% for data in serum_levels %} {{data.blood_sugar_level}}, {% endfor %}],
-            borderColor: "blue",
-            fill: false
-         }]
-            },
-            options: {
-            legend: {display: false}
-            }
-        });
-// const myChart = new Chart(ctx, {
-//     type: 'line',
-//     data: {
-//         /* need to figure out how to get their blood-sugar levels (or this is all serum levels) */
-//             /* people in stage 4 of CKD get lab tests avg 2 months */
-//         labels: [{% for data in data %} '{{data.results_date}}', {% endfor %}],
-//         /* labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'], */
-//         datasets: [{
-//             label: 'Serum Levels',
-//             data: [{% for data in data %} {{data.serum_levels}}, {% endfor %}],
-//             /* data: [12, 19, 3, 5, 2, 3], */
-//             backgroundColor: [
-//                 'rgba(255, 99, 132, 0.8)',
-//                 'rgba(54, 162, 235, 0.8)',
-//                 'rgba(255, 206, 86, 0.8)',
-//                 'rgba(75, 192, 192, 0.8)',
-//                 'rgba(153, 102, 255, 0.8)',
-//                 'rgba(255, 159, 64, 0.8)'
-//             ],
-//             borderColor: [
-//                 'rgba(255, 99, 132, 1)',
-//                 'rgba(54, 162, 235, 1)',
-//                 'rgba(255, 206, 86, 1)',
-//                 'rgba(75, 192, 192, 1)',
-//                 'rgba(153, 102, 255, 1)',
-//                 'rgba(255, 159, 64, 1)'
-//             ],
-//             borderWidth: 1
-//         }]
-//     },
-//     options: {
-//         scales: {
-//             y: {
-//                 beginAtZero: true
-//             }
-//         }
-//     }
-// });
+var ctx = document.getElementById("myChart").getContext("2d");
+    
+    var dataFirst = {
+        label: "Potassium Levels",
+        data: [{% for data in data %}{{data.potassium_level}},{% endfor %}],
+        lineTension: 0,
+        fill: false,
+        borderColor: 'red'
+      };
+    
+    var dataSecond = {
+        label: "Phosphorus Levels",
+        data: [{% for data in data %}{{data.phosphorus_level}},{% endfor %}],
+        lineTension: 0,
+        fill: false,
+        borderColor: 'blue'
+      };
+    
+    var dataThird = {
+        label: "Sodium levels",
+        data: [{% for data in data %}{{data.sodium_level}},{% endfor %}],
+        lineTension: 0,
+        fill: false,
+        borderColor: 'green'
+      };
+    
+    var dataFourth = {
+        label: "Calcium levels",
+        data: [{% for data in data %}{{data.calcium_level}},{% endfor %}],
+        lineTension: 0,
+        fill: false,
+        borderColor: 'yellow'
+      };
+    
+    var dataFifth = {
+        label: "Blood Sugar levels",
+        data: [{% for data in data %}{{data.blood_sugar_level}},{% endfor %}],
+        lineTension: 0,
+        fill: false,
+        borderColor: 'purple'
+      };
+    
+    var lineChart = {
+      labels: [{% for data in data %}'{{data.results_date}}',{% endfor %}],
+      datasets: [dataFirst, dataSecond, dataThird, dataFourth, dataFifth]
+    };
+    
+    var chartOptions = {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          boxWidth: 80,
+          fontColor: 'black'
+        }
+      }
+    };
+    
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      data: lineChart,
+      options: chartOptions
+    });
+    
 </script>
 {% endblock %}

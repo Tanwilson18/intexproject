@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Profile Page{% endblock title %}
+
+
+    <div class="row my-3 p-3">
+        <h1>Welcome {{user.first_name}}</h1>
+        <h5>Input Account Information</h5>
+
+{% block content %}
+<div class="container">
+    <form name="form" method="post" action="{% url 'addProfile' %}">
+        {% csrf_token %}
+
+        <input type="hidden" id="username" name="username" value="{{user.username}}">
+        <input type="hidden" id="first_name" name="first_name" value="{{user.first_name}}">
+        <input type="hidden" id="last_name" name="last_name" value="{{user.last_name}}">
+        <input type="hidden" id="email" name="email" value="{{user.email}}">
+
+        <br>
+        <label for='phone_number'>Phone Number:</label>
+        <input type="text" name='phone_number' id='phone_number'>
+        <br><br>
+
+        <label for='birth_date'>Birth Date:</label>
+        <input type='date' name='birth_date' id='birth_date'>
+        <br><br>
+
+        <label for='sex'>Sex:</label>
+        <input type='text' name='sex' id='sex'>
+        <br><br>
+
+        <label for='weight_lbs'>Weight(lbs):</label>
+        <input type='floatformat' name='weight_lbs' id='weight_lbs'>
+        <br><br>
+
+        <label for='height_inches'>Height(in):</label>
+        <input type='floatformat' name='height_inches' id='height_inches'>
+        <br><br>
+
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <br><br>
+
+    </form>
+            
+
+    </div>
+
+{% endblock %}

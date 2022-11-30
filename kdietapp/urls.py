@@ -9,6 +9,8 @@ from .views import faqPageView
 from .views import register_request
 from .views import login_request, profile
 from .views import logout_request
+from .views import addProfilePageView
+from .views import editProfilePageView
 
 
 urlpatterns = [
@@ -17,7 +19,6 @@ urlpatterns = [
     path('register/', register_request, name="register"),
     path('profile/', profile, name='profile'),
 
-    path('portitem/', faqPageView, name='portitem'),
     path('faq/', faqPageView, name='faq'),
     path('blogpost/', blogpostPageView, name='blogpost'),
     path('bloghome/', bloghomePageView, name='bloghome'),
@@ -25,7 +26,10 @@ urlpatterns = [
 
     path('tracker/', trackerPageView, name='tracker'),
     path('serum_levels/', serumLevelPageView, name='serum_levels'),
+    path('addProfile/', addProfilePageView, name='addProfile'),
+    path('editProfile/', editProfilePageView, name='editProfile'),
     path('', indexPageView, name='index'),
+
 
 
 ]

@@ -4,8 +4,11 @@
 {% load crispy_forms_tags %}
 
 <div class="container">
-    <h1>You have been logged out </h1>
-    <h5><a href = "{% url login %}">Login Again</a></h5>
+    <br>
+    <h1>You have been logged out successfully</h1>
+    <P><a href = "{% url 'login' %}">Login Again</a></p>
+    <p><a href = "{% url 'index' %}">Home</a></p>
+
 </div>
 
 {%endblock%}

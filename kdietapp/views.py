@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib import messages
+
 from .forms import NewUserForm
 from django.contrib.auth import login, authenticate, logout  # add this
 from django.contrib.auth.forms import AuthenticationForm  # add this
 from .models import serum_levels
 import pip._vendor.requests as requests
 from .formserumlevels import serum_levels_form
+from .models import kdiet_user
 
 # Create your views here.
 
@@ -68,25 +70,70 @@ def trackerPageView(request):
 
         nutrients = []
         nutrientValues = {}
-        # wht does this do????
         for i in food_dict:
             for key in food_dict[i]:
                 if key == "Water":
                     food_dict[i][key][1] = 'mL'
-                nutrientValue = str(
-                    food_dict[i][key][0]) + " " + food_dict[i][key][1]
+                nutrientValue = food_dict[i][key][0]
+                nutrientMeasure = food_dict[i][key][1]
                 nutrients.append(key)
                 nutrientValues = {key: nutrientValue}
+                nutrientMeasures = {key: nutrientMeasure}
 
         context = {
             'foods': food_dict,
             'nutrients': nutrients,
             'nutrientValues': nutrientValues,
+            'nutrientMeasure': nutrientMeasures,
             'list': nutrients
         }
         return render(request, 'subpages/tracker.html', context)
     else:
         return render(request, 'subpages/tracker.html')
+
+
+def addProfilePageView(request):
+    if request.method == 'POST':
+
+        k_user = kdiet_user()
+
+        k_user.username = request.POST['username']
+        k_user.first_name = request.POST['first_name']
+        k_user.last_name = request.POST['username']
+        k_user.email = request.POST['email']
+        k_user.phone_number = request.POST['phone_number']
+        k_user.birth_date = request.POST['birth_date']
+        k_user.sex = request.POST['sex']
+        k_user.weight_lbs = request.POST['weight_lbs']
+        k_user.height_inches = request.POST['height_inches']
+
+        k_user.save()
+
+        return indexPageView(request)
+    else:
+        return render(request, 'subpages/addProfile.html')
+
+
+def editProfilePageView(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+
+        k_user = kdiet_user.objects.get(id=username)
+
+        k_user.first_name = request.POST['first_name']
+        k_user.last_name = request.POST['last_name']
+        k_user.email = request.POST['email']
+        k_user.phone_number = request.POST['phone_number']
+        k_user.birth_date = request.POST['birth_date']
+        k_user.sex = request.POST['sex']
+        k_user.weight_lbs = request.POST['weight_lbs']
+        k_user.height_inches = request.POST['height_inches']
+
+        k_user.save()
+
+        return indexPageView(request)
+    else:
+        return render(request, 'subpages/editProfile.html')
 
 
 def pricingPageView(request):
@@ -112,7 +159,7 @@ def register_request(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Registration successful.")
-            return redirect("index")
+            return redirect("addProfile")
         messages.error(
             request, "Unsuccessful registration. Invalid information.")
     form = NewUserForm()
@@ -129,7 +176,7 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 messages.info(request, f"You are now logged in as {username}.")
-                # once logged in automaticallt redirects
+                # once logged in automatically redirects
                 return redirect("index")
             else:
                 messages.error(request, "Invalid username or password.")
@@ -140,9 +187,9 @@ def login_request(request):
 
 
 def logout_request(request):
-    logout(request)
     messages.info(request, "You have successfully logged out.")
-    return redirect("index")
+    logout(request)
+    return render(request, 'logout.html')
 
 
 def profile(request):

@@ -2,9 +2,8 @@ from django.db import models
 from datetime import datetime, date
 
 
-class user(models.Model):
+class kdiet_user(models.Model):
     username = models.CharField(max_length=50, primary_key=True, null=False)
-    password = models.CharField(max_length=50)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=14)
@@ -19,7 +18,7 @@ class user(models.Model):
         return (self.username)
 
     class Meta:
-        db_table = 'user'
+        db_table = 'kdiet_user'
 
 
 class comorbidity(models.Model):
@@ -34,7 +33,7 @@ class comorbidity(models.Model):
 
 
 class user_comorbidity(models.Model):
-    username = models.ForeignKey(user, on_delete=models.DO_NOTHING)
+    username = models.ForeignKey(kdiet_user, on_delete=models.DO_NOTHING)
     comorbidity_id = models.ForeignKey(
         comorbidity, on_delete=models.DO_NOTHING)
 
@@ -52,7 +51,7 @@ class user_comorbidity(models.Model):
 
 class food_diary(models.Model):
     date = models.DateField(default=date.today)
-    username = models.ForeignKey(user, on_delete=models.DO_NOTHING)
+    username = models.ForeignKey(kdiet_user, on_delete=models.DO_NOTHING)
 
     class Meta:
         constraints = [models.UniqueConstraint(
@@ -79,7 +78,7 @@ class food(models.Model):
 class food_diary_entry(models.Model):
     date = models.ForeignKey(food_diary, on_delete=models.DO_NOTHING)
     # couldn't figure out how to make the date a foreign key without errors
-    username = models.ForeignKey(user, on_delete=models.DO_NOTHING)
+    username = models.ForeignKey(kdiet_user, on_delete=models.DO_NOTHING)
     fdc_id = models.ForeignKey(food, on_delete=models.DO_NOTHING)
     meal_type = models.CharField(max_length=10)
 
@@ -116,7 +115,7 @@ class serum_levels(models.Model):
     creatinine_level = models.FloatField()
     albumin_level = models.FloatField()
     blood_sugar_level = models.FloatField()
-    username = models.ForeignKey(user, on_delete=models.DO_NOTHING)
+    username = models.ForeignKey(kdiet_user, on_delete=models.DO_NOTHING)
 
     class Meta:
         constraints = [models.UniqueConstraint(

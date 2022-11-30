@@ -14,7 +14,7 @@
                         <p class="lead fw-normal text-white-50 mb-4">Have you entered your daily food intake? Start entering below</p>
                         <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
                             <a class="btn btn-primary btn-lg px-4 me-sm-3" href="{% url 'tracker' %}">Enter Food</a>
-                            <a class="btn btn-outline-light btn-lg px-4" href="{% url 'profile' %}">view Account</a>
+                            <a class="btn btn-outline-light btn-lg px-4" href="{% url 'serum_levels' %}">View Levels</a>
                         </div>
                     </div>
                 </div>
@@ -80,6 +80,9 @@
         </div>
     </section>
     <!-- Testimonial section-->
+    {% if user.is_authenticated %}
+    {% else %}       
+
     <div class="py-5 bg-light">
         <div class="container px-5 my-5">
             <div class="row gx-5 justify-content-center">
@@ -99,6 +102,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     <!-- Blog preview section-->
     <section class="py-5">
         <div class="container px-5 my-5">
