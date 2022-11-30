@@ -12,7 +12,7 @@
                 <div class="text-center my-5">
                     <h1 class="fw-bolder mb-3">Our mission is to make dietary tracking easier for those with stage 3/4 chronic kidney disease.</h1>
                     <p class="lead fw-normal text-muted mb-4">kDIET is here to help provide an easy way to input food and get real time data of food levels as well as recommendations to help you preserve your kidney</p>
-                    <a class="btn btn-primary btn-lg" href="#scroll-target">Read our story</a>
+                    <a class="btn btn-primary btn-lg" href={% url 'faq' %}>Read our story</a>
                 </div>
             </div>
         </div>
@@ -36,43 +36,66 @@
 <canvas id="myChart" width="400" height="100"></canvas>
 <script>
 const ctx = document.getElementById('myChart').getContext('2d');
-const myChart = new Chart(ctx, {
-    type: 'line',
+const myChart = new Chart(ctx{
+    type: "line",
     data: {
-        /* need to figure out how to get their blood-sugar levels (or this is all serum levels) */
-            /* people in stage 4 of CKD get lab tests avg 2 months */
         labels: [{% for data in data %} '{{data.results_date}}', {% endfor %}],
-        /* labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'], */
         datasets: [{
-            label: 'Serum Levels',
-            data: [{% for data in data %} {{data.serum_levels}}, {% endfor %}],
-            /* data: [12, 19, 3, 5, 2, 3], */
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.8)',
-                'rgba(54, 162, 235, 0.8)',
-                'rgba(255, 206, 86, 0.8)',
-                'rgba(75, 192, 192, 0.8)',
-                'rgba(153, 102, 255, 0.8)',
-                'rgba(255, 159, 64, 0.8)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
+            label : 'Potassium Levels',
+            data: [{% for data in serum_levels %} {{data.potassium_level}}, {% endfor %}],
+            borderColor: "red",
+            fill: false
+        },{
+            data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
+            borderColor: "green",
+            fill: false
+        },{
+            data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
+            borderColor: "blue",
+            fill: false
+         }]
+            },
+            options: {
+            legend: {display: false}
             }
-        }
-    }
-});
+        });
+// const myChart = new Chart(ctx, {
+//     type: 'line',
+//     data: {
+//         /* need to figure out how to get their blood-sugar levels (or this is all serum levels) */
+//             /* people in stage 4 of CKD get lab tests avg 2 months */
+//         labels: [{% for data in data %} '{{data.results_date}}', {% endfor %}],
+//         /* labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'], */
+//         datasets: [{
+//             label: 'Serum Levels',
+//             data: [{% for data in data %} {{data.serum_levels}}, {% endfor %}],
+//             /* data: [12, 19, 3, 5, 2, 3], */
+//             backgroundColor: [
+//                 'rgba(255, 99, 132, 0.8)',
+//                 'rgba(54, 162, 235, 0.8)',
+//                 'rgba(255, 206, 86, 0.8)',
+//                 'rgba(75, 192, 192, 0.8)',
+//                 'rgba(153, 102, 255, 0.8)',
+//                 'rgba(255, 159, 64, 0.8)'
+//             ],
+//             borderColor: [
+//                 'rgba(255, 99, 132, 1)',
+//                 'rgba(54, 162, 235, 1)',
+//                 'rgba(255, 206, 86, 1)',
+//                 'rgba(75, 192, 192, 1)',
+//                 'rgba(153, 102, 255, 1)',
+//                 'rgba(255, 159, 64, 1)'
+//             ],
+//             borderWidth: 1
+//         }]
+//     },
+//     options: {
+//         scales: {
+//             y: {
+//                 beginAtZero: true
+//             }
+//         }
+//     }
+// });
 </script>
 {% endblock %}

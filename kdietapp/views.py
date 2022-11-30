@@ -32,74 +32,6 @@ def serumLevelPageView(request):
 
 
 def trackerPageView(request):
-    return render(request, 'subpages/food_tracker.html')
-
-
-def pricingPageView(request):
-    return render(request, 'subpages/pricing.html')
-
-
-def bloghomePageView(request):
-    return render(request, 'subpages/blog-home.html')
-
-
-def blogpostPageView(request):
-    return render(request, 'subpages/blog-post.html')
-
-
-def faqPageView(request):
-    return render(request, 'subpages/faq.html')
-
-
-def portoverviewPageView(request):
-    return render(request, 'subpages/portfolio-overview.html')
-
-
-def portitemPageView(request):
-    return render(request, 'subpages/portfolio-item.html')
-
-
-def register_request(request):
-    if request.method == "POST":
-        form = NewUserForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Registration successful.")
-            return redirect("index.html")
-        messages.error(
-            request, "Unsuccessful registration. Invalid information.")
-    form = NewUserForm()
-    return render(request, 'register.html', context={"register_form": form})
-
-
-def login_request(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.info(request, f"You are now logged in as {username}.")
-                # once logged in automaticallt redirects
-                return redirect("index.html")
-            else:
-                messages.error(request, "Invalid username or password.")
-        else:
-            messages.error(request, "Invalid username or password.")
-    form = AuthenticationForm()
-    return render(request, 'login.html', context={"login_form": form})
-
-
-def logout_request(request):
-    logout(request)
-    messages.info(request, "You have successfully logged out.")
-    return redirect("main:homepage")
-
-
-def dataRender(request):
     nutrient_list = ["Potassium, K", "Water",
                      "Protein", "Sodium, Na", "Phosphorus"]
     # foodType = None
@@ -139,20 +71,83 @@ def dataRender(request):
         # wht does this do????
         for i in food_dict:
             for key in food_dict[i]:
-                # if key == "Water":
-                #     food_dict[i][key][0] = round(food_dict[i][key][0]/1000, 2)
-                #     food_dict[i][key][1] = 'L'
+                if key == "Water":
+                    food_dict[i][key][1] = 'mL'
                 nutrientValue = str(
                     food_dict[i][key][0]) + " " + food_dict[i][key][1]
                 nutrients.append(key)
                 nutrientValues = {key: nutrientValue}
 
-            context = {
-                'foods': food_dict,
-                'nutrients': nutrients,
-                'nutrientValues': nutrientValues,
-                'list': nutrients
-            }
-            return render(request, 'test.html', context)
+        context = {
+            'foods': food_dict,
+            'nutrients': nutrients,
+            'nutrientValues': nutrientValues,
+            'list': nutrients
+        }
+        return render(request, 'subpages/tracker.html', context)
+    else:
+        return render(request, 'subpages/tracker.html')
+
+
+def pricingPageView(request):
+    return render(request, 'subpages/pricing.html')
+
+
+def bloghomePageView(request):
+    return render(request, 'subpages/blog-home.html')
+
+
+def blogpostPageView(request):
+    return render(request, 'subpages/blog-post.html')
+
+
+def faqPageView(request):
+    return render(request, 'subpages/faq.html')
+
+
+def portoverviewPageView(request):
+    return render(request, 'subpages/portfolio-overview.html')
+
+
+def portitemPageView(request):
+    return render(request, 'subpages/portfolio-item.html')
+
+
+def register_request(request):
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registration successful.")
+            return redirect("index")
+        messages.error(
+            request, "Unsuccessful registration. Invalid information.")
+    form = NewUserForm()
+    return render(request, 'register.html', context={"register_form": form})
+
+
+def login_request(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.info(request, f"You are now logged in as {username}.")
+                # once logged in automaticallt redirects
+                return redirect("index.html")
+            else:
+                messages.error(request, "Invalid username or password.")
         else:
-            return render(request, 'test.html')
+            messages.error(request, "Invalid username or password.")
+    form = AuthenticationForm()
+    return render(request, 'login.html', context={"login_form": form})
+
+
+def logout_request(request):
+    logout(request)
+    messages.info(request, "You have successfully logged out.")
+    return redirect("index.html")

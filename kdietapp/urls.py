@@ -11,7 +11,6 @@ from .views import portoverviewPageView
 from .views import register_request
 from .views import login_request
 from .views import logout_request
-from .views import dataRender
 
 urlpatterns = [
     path("logout/", logout_request, name="logout"),
@@ -24,7 +23,6 @@ urlpatterns = [
     path('blogpost/', blogpostPageView, name='blogpost'),
     path('bloghome/', bloghomePageView, name='bloghome'),
     path('pricing/', pricingPageView, name='pricing'),
-    path('test/', dataRender, name='test'),
     path('tracker/', trackerPageView, name='tracker'),
     path('serum_levels/', serumLevelPageView, name='serum_levels'),
     path('', indexPageView, name='index'),
