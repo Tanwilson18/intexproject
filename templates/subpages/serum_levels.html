@@ -45,12 +45,34 @@ const myChart = new Chart(ctx{
             data: [{% for data in serum_levels %} {{data.potassium_level}}, {% endfor %}],
             borderColor: "red",
             fill: false
-        },{
-            data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
+        },
+        {
+            label : 'Phosphorous Levels',
+            data: [{% for data in serum_levels %} {{data.phosphorous_level}}, {% endfor %}],
             borderColor: "green",
             fill: false
-        },{
-            data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
+        },
+        {
+            label : 'Sodium Level',
+            data: [{% for data in serum_levels %} {{data.sodium_level}}, {% endfor %}],
+            borderColor: "blue",
+            fill: false
+         },
+         {
+            label : 'Creatinine Level',
+            data: [{% for data in serum_levels %} {{data.creatinine_level}}, {% endfor %}],
+            borderColor: "yellow",
+            fill: false
+         },
+         {
+            label : 'Albumin Level',
+            data: [{% for data in serum_levels %} {{data.albumin_level}}, {% endfor %}],
+            borderColor: "purple",
+            fill: false
+         },
+         {
+            label : 'Blood Sugar Level',
+            data: [{% for data in serum_levels %} {{data.blood_sugar_level}}, {% endfor %}],
             borderColor: "blue",
             fill: false
          }]

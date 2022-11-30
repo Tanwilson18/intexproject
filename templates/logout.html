@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}      
+{% load static %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+    <h1>You have been logged out </h1>
+    <h5><a href = "{% url login %}">Login Again</a></h5>
+</div>
+
+{%endblock%}

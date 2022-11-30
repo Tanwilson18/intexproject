@@ -105,14 +105,6 @@ def faqPageView(request):
     return render(request, 'subpages/faq.html')
 
 
-def portoverviewPageView(request):
-    return render(request, 'subpages/portfolio-overview.html')
-
-
-def portitemPageView(request):
-    return render(request, 'subpages/portfolio-item.html')
-
-
 def register_request(request):
     if request.method == "POST":
         form = NewUserForm(request.POST)
@@ -138,7 +130,7 @@ def login_request(request):
                 login(request, user)
                 messages.info(request, f"You are now logged in as {username}.")
                 # once logged in automaticallt redirects
-                return redirect("index.html")
+                return redirect("index")
             else:
                 messages.error(request, "Invalid username or password.")
         else:
@@ -150,4 +142,8 @@ def login_request(request):
 def logout_request(request):
     logout(request)
     messages.info(request, "You have successfully logged out.")
-    return redirect("index.html")
+    return redirect("index")
+
+
+def profile(request):
+    return render(request, 'profile.html')

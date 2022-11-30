@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Profile Page{% endblock title %}
+{% load static %}
+
+{% block content %}
+    <div class="row my-3 p-3">
+        <h1>Welcome {{user.username}}</h1>
+        <h5>Edit Account Information</h5>
+    </div>
+
+{% endblock content %}

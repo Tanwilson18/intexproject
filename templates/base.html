@@ -29,20 +29,32 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'tracker' %}">Food Tracker</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'pricing' %}">Pricing</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'faq' %}">FAQ</a></li>
+                        
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Blog</a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
                                 <li><a class="dropdown-item" href="{% url 'bloghome' %}">Blog Home</a></li>
                                 <li><a class="dropdown-item" href="{% url 'blogpost' %}">Blog Post</a></li>
                             </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Portfolio</a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
-                                <li><a class="dropdown-item" href="{% url 'portoverview' %}">Portfolio Overview</a></li>
-                                <li><a class="dropdown-item" href="{% url 'portitem' %}">Portfolio Item</a></li>
-                            </ul>
-                        </li>
+                                  {% if user.is_authenticated %}
+                                  
+                                  <li class="nav-item">
+                                    <a class="nav-link" href="/logout">Logout</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'profile' %}">Welcome, {{user.username}}</a>
+                                  </li>
+                            
+                                  {% else %}
+                            
+                                  <li class="nav-item">
+                                    <a class="nav-link" href="/login">Login</a>
+                                  </li>
+                            
+                                  {% endif %}
+                                </ul>
+                              </div>
+                            </nav>
                     </ul>
                 </div>
             </div>

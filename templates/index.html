@@ -2,7 +2,29 @@
 {% load static %}
 {% block content %}
 {% load static %}
-    <!-- Header-->
+
+    <!-- Heade for authenticated user-->
+    {% if user.is_authenticated %}
+    <header class="bg-dark py-5">
+        <div class="container px-5">
+            <div class="row gx-5 align-items-center justify-content-center">
+                <div class="col-lg-8 col-xl-7 col-xxl-6">
+                    <div class="my-5 text-center text-xl-start">
+                        <h1 class="display-5 fw-bolder text-white mb-2">Kidney Watch</h1>
+                        <p class="lead fw-normal text-white-50 mb-4">Have you entered your daily food intake? Start entering below</p>
+                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                            <a class="btn btn-primary btn-lg px-4 me-sm-3" href="{% url 'tracker' %}">Enter Food</a>
+                            <a class="btn btn-outline-light btn-lg px-4" href="{% url 'profile' %}">view Account</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="{% static 'img/fitnessfood.jpg' %}" alt="background image of food" /></div>
+            </div>
+        </div>        
+    </header>
+
+    <!-- Heade for non user-->
+    {% else %}       
     <header class="bg-dark py-5">
         <div class="container px-5">
             <div class="row gx-5 align-items-center justify-content-center">
@@ -16,10 +38,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="{% static 'img/heroimagedrpng.png' %}" alt="background image of doctor" /></div>
+                <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="{% static 'img/kidneyheroimage.jpg' %}" alt="background image of doctor" /></div>
             </div>
-        </div>
+        </div>        
     </header>
+    {% endif %}
+
     <!-- Features section-->
     <section class="py-5" id="features">
         <div class="container px-5 my-5">
@@ -91,7 +115,7 @@
                     <div class="card h-100 shadow border-0">
 
                         <!-- this is where Ellie left off. Standardizing image size, put into img folder, then link -->
-                        <img class="card-img-top" src="{% static 'img/index_img/mediterranean-spaghetti-squash.jpg' %}" alt="Mediterranean Spaghetti Squash" />
+                        <img class="card-img-top" src="{% static 'img/pasta.jpg' %}" alt="Mediterranean Spaghetti Squash" />
                         <div class="card-body p-4">
                             <div class="badge bg-primary bg-gradient rounded-pill mb-2">Recipes</div>
                             <a class="text-decoration-none link-dark stretched-link" href="#!"><h5 class="card-title mb-3">Mediterranean Spaghetti Sqash</h5></a>
