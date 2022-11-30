@@ -65,14 +65,17 @@ class food_diary(models.Model):
 class food(models.Model):
     fdc_id = models.IntegerField(primary_key=True, null=False)
     name = models.CharField(max_length=80)
-    amount = models.IntegerField()
-    measurement = models.CharField(max_length=20)
+    mg_sodium = models.FloatField()
+    g_protein = models.FloatField()
+    l_water = models.FloatField()
+    mg_potassium = models.FloatField()
+    mg_phosphorus = models.FloatField()
 
     class Meta:
         db_table = 'food'
 
     def __str__(self):
-        return (self.fdc_id)
+        return (self.fdc_id, self.name, self.mg_sodium, self.g_protein, self.l_water, self.mg_potassium, self.mg_phosphorus)
 
 
 class food_diary_entry(models.Model):
@@ -92,19 +95,19 @@ class food_diary_entry(models.Model):
         return (self.date, self.username, self.fdc_id, self.meal_type)
 
 
-class micronutrient_info(models.Model):
-    mg_sodium = models.FloatField()
-    g_protein = models.FloatField()
-    l_water = models.FloatField()
-    mg_potassium = models.FloatField()
-    mg_phosphorus = models.FloatField()
-    fdc_id = models.ForeignKey(food, on_delete=models.DO_NOTHING)
+# class micronutrient_info(models.Model):
+#     mg_sodium = models.FloatField()
+#     g_protein = models.FloatField()
+#     l_water = models.FloatField()
+#     mg_potassium = models.FloatField()
+#     mg_phosphorus = models.FloatField()
+#     fdc_id = models.ForeignKey(food, on_delete=models.DO_NOTHING)
 
-    class Meta:
-        db_table = 'micronutrient_info'
+#     class Meta:
+#         db_table = 'micronutrient_info'
 
-    def __str__(self):
-        return (self.mg_sodium, self.g_protein, self.l_water, self.mg_potassium, self.mg_phosphorus, self.fcd_id)
+#     def __str__(self):
+#         return (self.mg_sodium, self.g_protein, self.l_water, self.mg_potassium, self.mg_phosphorus, self.fcd_id)
 
 
 class serum_levels(models.Model):

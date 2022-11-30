@@ -9,6 +9,7 @@ from .models import serum_levels
 import pip._vendor.requests as requests
 from .formserumlevels import serum_levels_form
 from .models import kdiet_user
+import json
 
 # Create your views here.
 
@@ -43,7 +44,7 @@ def trackerPageView(request):
     parameters = {
         'api_key': '9aSh1S0uTOlVQKP7ZDzmnjgGWYDfOmzK5RnZxcxQ',
         'query': search,
-        'dataType': 'Foundation'  # foodType if we decide to do that
+        # 'dataType': 'Foundation'  # foodType if we decide to do that
     }
     if search != None:
         response = requests.get(
@@ -51,7 +52,12 @@ def trackerPageView(request):
 
         data = response.json()
         food_dict = {}
-        for i in range(len(data["foods"])):
+        if len(data['foods']) == 0:
+            return render(request, 'subpages/tracker.html')
+        for i in range(10):
+            # for i in range(len(data["foods"])):
+            if len(data['foods']) < 10 and i >= len(data['foods']):
+                break
             food_name = data["foods"][i]["description"]
             food_dict[food_name] = {}
 
@@ -87,9 +93,31 @@ def trackerPageView(request):
             'nutrientMeasure': nutrientMeasures,
             'list': nutrients
         }
+
         return render(request, 'subpages/tracker.html', context)
     else:
         return render(request, 'subpages/tracker.html')
+
+
+def addFoodPageView(request):
+    nutrients = ""
+    nutrients_dict = {}
+    food_name = request.GET.get("food_name")
+    nutrients = request.GET.get(food_name+"-nutrients")
+    mealType = request.POST.get('mealtype')
+    # date = request.POST.get('date')
+
+    if nutrients is None:
+        pass
+    else:
+        nutrients_dict = json.loads(nutrients)
+
+    context = {
+        'food_name': food_name,
+        'nutrients': nutrients_dict,
+        'mealType': mealType
+    }
+    return render(request, 'subpages/addFood.html', context)
 
 
 def addProfilePageView(request):
@@ -116,24 +144,38 @@ def addProfilePageView(request):
 
 def editProfilePageView(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        sfirst_name = request.POST['first_name']
+        slast_name = request.POST['last_name']
+        newEmail = request.POST['email']
+        newPhoneNumber = request.POST['phone_number']
+        newBirthDate = request.POST['birth_date']
+        newSex = request.POST['sex']
+        newWeight = request.POST['weight_lbs']
+        newHeight = request.POST['height_inches']
 
-        k_user = kdiet_user.objects.get(id=username)
+        # Find the employee record
+        k_user = kdiet_user.objects.get(id=user_id)
 
-        k_user.first_name = request.POST['first_name']
-        k_user.last_name = request.POST['last_name']
-        k_user.email = request.POST['email']
-        k_user.phone_number = request.POST['phone_number']
-        k_user.birth_date = request.POST['birth_date']
-        k_user.sex = request.POST['sex']
-        k_user.weight_lbs = request.POST['weight_lbs']
-        k_user.height_inches = request.POST['height_inches']
+        k_user.first_name = sfirst_name
+        k_user.last_name = slast_name
+        k_user.email = newEmail
+        k_user.phone_number = newPhoneNumber
+        k_user.birth_date = newBirthDate
+        k_user.sex = newSex
+        k_user.weight_lbs = newWeight
+        k_user.height_inches = newHeight
 
         k_user.save()
 
         return indexPageView(request)
     else:
         return render(request, 'subpages/editProfile.html')
+
+
+def deleteUserPageView(request, username):
+    data = kdiet_user.objects.get(id=username)
+    data.delete()
+    return indexPageView(request)
 
 
 def pricingPageView(request):

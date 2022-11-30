@@ -11,7 +11,8 @@ from .views import login_request, profile
 from .views import logout_request
 from .views import addProfilePageView
 from .views import editProfilePageView
-
+from .views import addFoodPageView
+from .views import deleteUserPageView
 
 urlpatterns = [
     path("logout/", logout_request, name="logout"),
@@ -25,9 +26,11 @@ urlpatterns = [
     path('pricing/', pricingPageView, name='pricing'),
 
     path('tracker/', trackerPageView, name='tracker'),
+    path('addFood/', addFoodPageView, name='addFood'),
     path('serum_levels/', serumLevelPageView, name='serum_levels'),
     path('addProfile/', addProfilePageView, name='addProfile'),
     path('editProfile/', editProfilePageView, name='editProfile'),
+    path('deleteUser/', deleteUserPageView, name='deleteUser'),
     path('', indexPageView, name='index'),
 
 
