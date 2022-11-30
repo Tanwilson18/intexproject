@@ -2,26 +2,37 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib import messages
 from .forms import NewUserForm
-from django.contrib.auth import login, authenticate  # add this
+from django.contrib.auth import login, authenticate, logout  # add this
 from django.contrib.auth.forms import AuthenticationForm  # add this
 from .models import serum_levels
-
+import pip._vendor.requests as requests
+from .formserumlevels import serum_levels_form
 
 # Create your views here.
+
+
 def indexPageView(request):
     return render(request, 'index.html')
 
 
 def serumLevelPageView(request):
     data = serum_levels.objects.all()
+    if request.method == 'POST':
+        form = serum_levels_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/serum_levels')
+    else:
+        form = serum_levels_form()
     context = {
         'data': data,
+        'form': form,
     }
     return render(request, 'subpages/serum_levels.html', context)
 
 
-def contactPageView(request):
-    return render(request, 'subpages/contact.html')
+def trackerPageView(request):
+    return render(request, 'subpages/food_tracker.html')
 
 
 def pricingPageView(request):
@@ -82,17 +93,66 @@ def login_request(request):
     return render(request, 'login.html', context={"login_form": form})
 
 
-"""
-hey there
+def logout_request(request):
+    logout(request)
+    messages.info(request, "You have successfully logged out.")
+    return redirect("main:homepage")
+
+
 def dataRender(request):
-    foodType = None
-    foodType = request.POST.get("foodGroups")
+    nutrient_list = ["Potassium, K", "Water",
+                     "Protein", "Sodium, Na", "Phosphorus"]
+    # foodType = None
+    # foodType = request.POST.get("foodGroups")
     search = None
     search = request.POST.get("SearchFood")
     parameters = {
         'api_key': '9aSh1S0uTOlVQKP7ZDzmnjgGWYDfOmzK5RnZxcxQ',
-        'query': query
+        'query': search,
+        'dataType': 'Foundation'  # foodType if we decide to do that
     }
     if search != None:
+        response = requests.get(
+            "https://api.nal.usda.gov/fdc/v1/foods/search", params=parameters)
 
-"""
+        data = response.json()
+        food_dict = {}
+        for i in range(len(data["foods"])):
+            food_name = data["foods"][i]["description"]
+            food_dict[food_name] = {}
+
+            for j in range(len(data["foods"][i]["foodNutrients"])):
+                nutrient_name = data["foods"][i]["foodNutrients"][j]['nutrientName']
+
+                if nutrient_name in nutrient_list:
+
+                    if 'value' in data['foods'][i]['foodNutrients'][j].keys():
+                        value = data['foods'][i]['foodNutrients'][j]['value']
+                        unit = data['foods'][i]['foodNutrients'][j]['unitName']
+                    else:
+                        value = 0
+                        unit = 0
+                    food_dict[food_name][nutrient_name] = [value, unit]
+
+        nutrients = []
+        nutrientValues = {}
+        # wht does this do????
+        for i in food_dict:
+            for key in food_dict[i]:
+                # if key == "Water":
+                #     food_dict[i][key][0] = round(food_dict[i][key][0]/1000, 2)
+                #     food_dict[i][key][1] = 'L'
+                nutrientValue = str(
+                    food_dict[i][key][0]) + " " + food_dict[i][key][1]
+                nutrients.append(key)
+                nutrientValues = {key: nutrientValue}
+
+            context = {
+                'foods': food_dict,
+                'nutrients': nutrients,
+                'nutrientValues': nutrientValues,
+                'list': nutrients
+            }
+            return render(request, 'test.html', context)
+        else:
+            return render(request, 'test.html')

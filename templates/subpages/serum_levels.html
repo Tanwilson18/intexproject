@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 {% load static %}
+{% load crispy_forms_tags %}
 <!-- Trends over time (daily, weekly, monthly) -->
 <!-- Header -->
 <header class="py-5">
@@ -20,8 +21,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>r
 </header>
 
+<!-- serum levels form -->
+<div class = "border p-3 shadow">
+    <h4>Add Serum Levels</h4>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <input class = 'btn btn-success btn-block' type='submit' value = 'Add'>
+    </form>
+</div>
+
 <!-- blood sugar visualization section -->
-<canvas id="myChart" width="400" height="400"></canvas>
+<canvas id="myChart" width="400" height="100"></canvas>
 <script>
 const ctx = document.getElementById('myChart').getContext('2d');
 const myChart = new Chart(ctx, {
@@ -29,12 +41,12 @@ const myChart = new Chart(ctx, {
     data: {
         /* need to figure out how to get their blood-sugar levels (or this is all serum levels) */
             /* people in stage 4 of CKD get lab tests avg 2 months */
-        /* labels: [{% for data in data %} '{{data.movie}}', {% endfor %}], */
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: [{% for data in data %} '{{data.results_date}}', {% endfor %}],
+        /* labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'], */
         datasets: [{
-            label: 'Blood Sugar Levels',
-            /* data: [{% for data in data %} {{data.domesticBoxOffice}}, {% endfor %}], */
-            data: [12, 19, 3, 5, 2, 3],
+            label: 'Serum Levels',
+            data: [{% for data in data %} {{data.serum_levels}}, {% endfor %}],
+            /* data: [12, 19, 3, 5, 2, 3], */
             backgroundColor: [
                 'rgba(255, 99, 132, 0.8)',
                 'rgba(54, 162, 235, 0.8)',

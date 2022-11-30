@@ -1,0 +1,114 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<!-- Page content-->
+<!-- form for food input, micronutrient visualizations -->
+<form method="post" action="{% url 'test' %}">
+    {% csrf_token %}
+    <section class="py-5">
+        <div class="container px-5">
+            <!-- Contact form-->
+            <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                <div class="text-center mb-5">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-envelope"></i></div>
+                    <h1 class="fw-bolder">Log Your Meal</h1>
+                    <p class="lead fw-normal text-muted mb-0">Fill out the Form Below</p>
+                </div>
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-8 col-xl-6">
+                    <!-- * * * * * * * * * * * * * * *-->
+                    <!-- * * SB Forms Contact Form * *-->
+                    <!-- * * * * * * * * * * * * * * *-->
+                    <!-- This form is pre-integrated with SB Forms.-->
+                    <!-- To make this form functional, sign up at-->
+                    <!-- https://startbootstrap.com/solution/contact-forms-->
+                    <!-- to get an API token!-->
+                        <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+                        <!-- Date input -->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="dtMeal" type="date" placeholder="Enter the date..." data-sb-validations="required" />
+                                <label for="dtMeal">Date of Meal:</label>
+                            </div>
+                        <!-- Meal type input -->
+                            <div>
+                                <input type="radio" id="rbBreakfast" name="meal_type" value="breakfast">
+                                <label for="rbBreakfast">Breakfast</label><br>
+                                <input type="radio" id="rbLunch" name="meal_type" value="lunch">
+                                <label for="rbLunch">Lunch</label><br>
+                                <input type="radio" id="rbDinner" name="meal_type" value="dinner">
+                                <label for="rbDinner">Dinner</label><br>
+                                <input type="radio" id="rbSnack" name="meal_type" value="snack">
+                                <label for="rbSnack">Snack</label><br>
+                                <input type="radio" id="rbWater" name="meal_type" value="water">
+                                <label for="rbWater">Water</label><br><br>
+                            </div>
+                        <!-- Search Food -->
+                            <div>
+                                <h3>Enter Food Name:</h3>   
+                                <form class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" method="post" action="{% url 'test' %}">
+                                    {% csrf_token %}
+                                    <input name="SearchFood" type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                    aria-label="Search" aria-describedby="basic-addon2" ><br>
+                                    <button class="btn btn-primary" type="submit">Search</button>
+                                </form>
+                                <br><br>
+                                <ul>
+                                    {% for food_name, nutrients in foods.items %}
+                                    <form action="{% url 'test' %}">
+                                        <button name="addFood" value={{food_name}} type="submit">{{food_name}}</button>><br><br>
+                                    </form>
+                                        {% for nutrient_name, amount_unit in nutrients.items %}
+                                        {{nutrient_name}}:
+                                        {% for value in amount_unit%}
+                                        {{value}}
+                                        {% endfor %}
+                                        <br>
+                                        {% endfor %}
+                                        <br>
+                                    {% endfor %}
+                                </ul>
+                            <!-- Submit success message-->
+                            <div class="d-none" id="submitSuccessMessage">
+                                <div class="text-center mb-3">
+                                    <div class="fw-bolder">Food submission successful!</div>
+                                </div>
+                            </div>
+                            <!-- Submit error message-->
+                            <!---->
+                            <!-- This is what your users will see when there is-->
+                            <!-- an error submitting the form-->
+                            <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                            <!-- Submit Button-->
+                            <div class="d-grid"><button class="btn btn-primary btn-lg disabled" id="submitButton" type="submit">Submit</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Contact cards-->
+            <div class="row gx-5 row-cols-2 row-cols-lg-4 py-5">
+                <div class="col">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-chat-dots"></i></div>
+                    <div class="h5 mb-2">Chat with us</div>
+                    <p class="text-muted mb-0">Chat live with one of our support specialists.</p>
+                </div>
+                <div class="col">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-people"></i></div>
+                    <div class="h5">Ask the community</div>
+                    <p class="text-muted mb-0">Explore our community forums and communicate with other users.</p>
+                </div>
+                <div class="col">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-question-circle"></i></div>
+                    <div class="h5">Support center</div>
+                    <p class="text-muted mb-0">Browse FAQ's and support articles to find solutions.</p>
+                </div>
+                <div class="col">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-telephone"></i></div>
+                    <div class="h5">Call us</div>
+                    <p class="text-muted mb-0">Call us during normal business hours at (555) 892-9403.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+    </div>
+{% endblock %}

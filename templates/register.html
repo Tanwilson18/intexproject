@@ -9,8 +9,9 @@
 	<form method="POST">
 		{% csrf_token %}
 		{{ register_form|crispy }}                    
-		<button class="btn btn-primary" type="submit">Register</button>
+		<button class="btn btn-primary" type="submit" href="{% url 'tracker'%}">Register></button>
 	</form>
+	<!--Register url not Working--> 
 	<p class="text-center">If you already have an account, <a href="{% url 'login' %}">login</a> instead.</p>
 </div>
 
