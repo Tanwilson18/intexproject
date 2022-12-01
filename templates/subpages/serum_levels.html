@@ -26,8 +26,11 @@
     <h4>Add Serum Levels</h4>
     <hr>
     <form method="POST">
+      <br>
         {% csrf_token %}
         {{ form | crispy }}
+        <input type="hidden" id="username" name="username" value="{{user.username}}">
+        <br>
         <input class = 'btn btn-success btn-block' type='submit' value = 'Add'>
     </form>
 </div>

@@ -4,13 +4,15 @@
 {% load crispy_forms_tags %}         
 
 <!--Register--> 
+{% comment %} 
 {% if messages %}
 {% for message in messages %}
 <div class='alert'>{{ message }}
 	<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
 {% endfor %}
 {% endif %}
-</div>
+</div> 
+{% endcomment %}
 <div class="container py-5">
 	<h1>Register</h1>
 	<form method="POST">

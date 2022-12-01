@@ -8,7 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm  # add this
 from .models import serum_levels
 import pip._vendor.requests as requests
 from .formserumlevels import serum_levels_form
-from .models import kdiet_user
+from .models import kdiet_user, food
 import json
 
 # Create your views here.
@@ -36,7 +36,7 @@ def serumLevelPageView(request):
 
 def trackerPageView(request):
     nutrient_list = ["Potassium, K", "Water",
-                     "Protein", "Sodium, Na", "Phosphorus"]
+                     "Protein", "Sodium, Na", "Phosphorus, P"]
     # foodType = None
     # foodType = request.POST.get("foodGroups")
     search = None
@@ -68,31 +68,31 @@ def trackerPageView(request):
 
                     if 'value' in data['foods'][i]['foodNutrients'][j].keys():
                         value = data['foods'][i]['foodNutrients'][j]['value']
-                        unit = data['foods'][i]['foodNutrients'][j]['unitName']
+                        #unit = data['foods'][i]['foodNutrients'][j]['unitName']
                     else:
                         value = 0
-                        unit = 0
-                    food_dict[food_name][nutrient_name] = [value, unit]
+                        #unit = 0
+                    food_dict[food_name][nutrient_name] = [value]  # , unit]
 
         nutrients = []
         nutrientValues = {}
         for i in food_dict:
             for key in food_dict[i]:
-                if key == "Water":
-                    food_dict[i][key][1] = 'mL'
+                # if key == "Water":
+                #    food_dict[i][key][1] = 'mL'
                 nutrientValue = food_dict[i][key][0]
-                nutrientMeasure = food_dict[i][key][1]
+                #nutrientMeasure = food_dict[i][key][1]
                 nutrients.append(key)
                 nutrientValues = {key: nutrientValue}
-                nutrientMeasures = {key: nutrientMeasure}
+                #nutrientMeasures = {key: nutrientMeasure}
 
-        context = {
-            'foods': food_dict,
-            'nutrients': nutrients,
-            'nutrientValues': nutrientValues,
-            'nutrientMeasure': nutrientMeasures,
-            'list': nutrients
-        }
+            context = {
+                'foods': food_dict,
+                'nutrients': nutrients,
+                'nutrientValues': nutrientValues,
+                # 'nutrientMeasure': nutrientMeasures,
+                'list': nutrients
+            }
 
         return render(request, 'subpages/tracker.html', context)
     else:
@@ -102,21 +102,31 @@ def trackerPageView(request):
 def addFoodPageView(request):
     nutrients = ""
     nutrients_dict = {}
-    food_name = request.GET.get("food_name")
-    nutrients = request.GET.get(food_name+"-nutrients")
+    foodName = request.GET.get("foodName")
+    nutrients = request.GET.get(foodName+"-nutrients")
     mealType = request.POST.get('mealtype')
     # date = request.POST.get('date')
 
     if nutrients is None:
         pass
     else:
+        nutrients = nutrients.replace('\'', '\"')
         nutrients_dict = json.loads(nutrients)
+        test = json.dumps(nutrients_dict, indent=4)
+        print(test)
 
     context = {
-        'food_name': food_name,
+        'foodName': foodName,
         'nutrients': nutrients_dict,
         'mealType': mealType
     }
+
+    # if request.method == "Post":
+    #     foodItem = food()
+    #     foodItem.name = request.GET.get('foodName')
+
+    #     foodItem.save()
+
     return render(request, 'subpages/addFood.html', context)
 
 
@@ -144,6 +154,8 @@ def addProfilePageView(request):
 
 def editProfilePageView(request):
     if request.method == 'POST':
+        k_user = request.user
+
         sfirst_name = request.POST['first_name']
         slast_name = request.POST['last_name']
         newEmail = request.POST['email']
@@ -152,9 +164,6 @@ def editProfilePageView(request):
         newSex = request.POST['sex']
         newWeight = request.POST['weight_lbs']
         newHeight = request.POST['height_inches']
-
-        # Find the employee record
-        k_user = kdiet_user.objects.get(id=user_id)
 
         k_user.first_name = sfirst_name
         k_user.last_name = slast_name

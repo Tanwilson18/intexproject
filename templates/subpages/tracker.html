@@ -47,7 +47,18 @@
                                         {% for nutrient_name, amount_unit in nutrients.items %}
                                         {{nutrient_name}}:
                                         {% for value in amount_unit %}
-                                        {{value}}
+                                        {% if nutrient_name == "Protein"%}
+                                          {{value}} g
+                                        {% elif nutrient_name == "Sodium, Na" %}
+                                          {{value}} mg
+                                        {% elif nutrient_name == "Water" %}
+                                          {{value}} L
+                                        {% elif nutrient_name == "Potassium, K" %}
+                                          {{value}} mg
+                                        {% elif nutrient_name == "Phosphorus, P" %}
+                                          {{value}} mg
+                                        {% endif %}
+
                                         {% endfor %}
                                         <br>
                                         {% endfor %}

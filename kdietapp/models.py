@@ -63,7 +63,7 @@ class food_diary(models.Model):
 
 
 class food(models.Model):
-    fdc_id = models.IntegerField(primary_key=True, null=False)
+    entry_id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=80)
     mg_sodium = models.FloatField()
     g_protein = models.FloatField()
@@ -75,24 +75,24 @@ class food(models.Model):
         db_table = 'food'
 
     def __str__(self):
-        return (self.fdc_id, self.name, self.mg_sodium, self.g_protein, self.l_water, self.mg_potassium, self.mg_phosphorus)
+        return (self.entry_id, self.name, self.mg_sodium, self.g_protein, self.l_water, self.mg_potassium, self.mg_phosphorus)
 
 
 class food_diary_entry(models.Model):
     date = models.ForeignKey(food_diary, on_delete=models.DO_NOTHING)
     # couldn't figure out how to make the date a foreign key without errors
     username = models.ForeignKey(kdiet_user, on_delete=models.DO_NOTHING)
-    fdc_id = models.ForeignKey(food, on_delete=models.DO_NOTHING)
+    entry_id = models.ForeignKey(food, on_delete=models.DO_NOTHING)
     meal_type = models.CharField(max_length=10)
 
     class Meta:
         constraints = [models.UniqueConstraint(
-            fields=['date', 'username', 'fdc_id', 'meal_type'], name="food_diary_entry_CPK")]
+            fields=['date', 'username', 'entry_id', 'meal_type'], name="food_diary_entry_CPK")]
         db_table = 'food_diary_entry'
 
     def __str__(self):
         # trying to return all values
-        return (self.date, self.username, self.fdc_id, self.meal_type)
+        return (self.date, self.username, self.entry_id, self.meal_type)
 
 
 # class micronutrient_info(models.Model):
@@ -101,7 +101,7 @@ class food_diary_entry(models.Model):
 #     l_water = models.FloatField()
 #     mg_potassium = models.FloatField()
 #     mg_phosphorus = models.FloatField()
-#     fdc_id = models.ForeignKey(food, on_delete=models.DO_NOTHING)
+#     entry_id = models.ForeignKey(food, on_delete=models.DO_NOTHING)
 
 #     class Meta:
 #         db_table = 'micronutrient_info'
@@ -127,4 +127,4 @@ class serum_levels(models.Model):
 
     def __str__(self):
         # returning the name of the constraint
-        return (self.results_date)
+        return (self.username)
