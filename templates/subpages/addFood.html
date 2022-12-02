@@ -4,68 +4,40 @@
 {% load crispy_forms_tags %}
 <!-- Page content-->
 <!-- form for food input, micronutrient visualizations -->
-<form method="post" action="{% url 'tracker' %}">
-    {% csrf_token %}
+<form name="form" method="post" action="{% url 'addFood' %}">
     <section class="py-5">
         <div class="container px-5">
             <!-- Contact form-->
             <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
                 <div class="text-center mb-5">
-                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-envelope"></i></div>
-                    <h1 class="fw-bolder">Log Your Meal</h1>
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
+                    <h1 class="fw-bolder">Enter Meal Details</h1>
                     <p class="lead fw-normal text-muted mb-0">Fill out the Form Below</p>
                 </div>
                
                 <br>
-                {% comment %} {% for nutrient_name, amount_unit in nutrients.items %}
-                    {{nutrient_name}}:
-                    {% for value in amount_unit%}
-                    {{value}}
-                    {% endfor %}
-                    <br>
-                    {% endfor %} {% endcomment %}
-                
-                {% comment %} {% if foodName == 'water'%} {% endcomment %}
-                {% comment %} <form action="store_food">
-                    <label for="Quantity">Quantity</label>
-                        <input name="quantity" type="number" min="1" max="999" step="1" required>
-                    <input type="hidden" name="water" value="{{water}}">
-                    <button type="submit">Add</button>
-                </form> {% endcomment %}
-                {% comment %} {% else %} {% endcomment %}
-                <form action="store_food">
-                    
-
-
-                
-                {% comment %} {% endif %} {% endcomment %}
-
-                
+               
+            <form name="form" method="post" action="{% url 'addFood' %}">
+                {% csrf_token %}
                 <div class="row gx-5 justify-content-center">
                     <div class="col-lg-8 col-xl-6">
                     <h5>{{foodName}} </h5>
-                    
+                    <input type="hidden" name="foodName" value={{foodName}}>
+                    <input type="hidden" name="water" value={{water}}>
+                    <input type="hidden" name="potassium" value={{potassium}}>
+                    <input type="hidden" name="protein" value={{protein}}>
+                    <input type="hidden" name="sodium" value={{sodium}}>
+                    <input type="hidden" name="phosphorus" value={{phosphorus}}>
                     <label for="Quantity">Quantity</label>
                     <br>
                     <input name="quantity" type="number" min=".1" max="999" step="0.1" required>
                     <br><br>
-                    <input type="hidden" name="water" value="{{water}}">
-                    <input type="hidden" name="potassium" value="{{potassium}}">
-                    <input type="hidden" name="protein" value="{{protein}}">
-                    <input type="hidden" name="sodium" value="{{sodium}}">
-                    <input type="hidden" name="phosphorus" value="{{phosphorus}}">
-                    <!-- * * * * * * * * * * * * * * *-->
-                    <!-- * * SB Forms Contact Form * *-->
-                    <!-- * * * * * * * * * * * * * * *-->
-                    <!-- This form is pre-integrated with SB Forms.-->
-                    <!-- To make this form functional, sign up at-->
-                    <!-- https://startbootstrap.com/solution/contact-forms-->
-                    <!-- to get an API token!-->
-                        {% comment %} <form id="contactForm" data-sb-form-api-token="API_TOKEN"> {% endcomment %}
+                  
+                    
                         <!-- Date input -->
                             <h5>Select Date of Meal:</h5>
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="date" type="date" placeholder="Enter the date..." data-sb-validations="required" />
+                                <input class="form-control" id="date" name = "date" type="date" placeholder="Enter the date..." data-sb-validations="required" required>
                                 <label for="date">Date:</label>
                             </div>
                         <!-- Meal type input -->
@@ -78,22 +50,9 @@
                                     <option value="snack">Snack</option>
                                     <option value="water">Water</option>
                                 </select><br><br>
-                            </div>
-                        <!-- Search Food -->
-                            <div>
-                                
+                            </div>                             
 
-                            <!-- Submit success message-->
-                            <div class="d-none" id="submitSuccessMessage">
-                                <div class="text-center mb-3">
-                                    <div class="fw-bolder">Food submission successful!</div>
-                                </div>
-                            </div>
-                            <!-- Submit error message-->
-                            <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error!</div></div>
-                            <!-- Submit Button-->
-                            <div class="d-grid"><button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button></div>
-                        {% comment %} </form> {% endcomment %}
+                            <div class="d-grid"><button class="btn btn-primary" type="submit">Submit</button></div>
                     </div>
                 </div>
             </form>
@@ -101,6 +60,7 @@
             </div>
         </div>
     </section>
+
     </main>
     </div>
     </head>

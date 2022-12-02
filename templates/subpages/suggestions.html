@@ -1,0 +1,65 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+{% load static %}
+<section class="py-5" id="features">
+    <div class="container px-5 my-5">
+        <div class=><h2 class="fw-bolder mb-0">Suggestions for a healthier way of eating.</h2></div>
+
+        <div><img class="img-fluid rounded-3 my-5" src="{% static 'img/food-samoln.jpg' %}" alt="healthy food" /></div>
+        <div class="row gx-5">
+            <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"></div><br><br>
+            <div class="col-lg-8">
+                <div class="row gx-5 row-cols-1 row-cols-md-2">
+                    <div class="col mb-5 h-100">
+                        <h2>Foods low in Sodium</h2>
+                        <p class="mb-0">
+                            <ul>
+                                <li>Fresh food
+                                <li>Avoid package and fast food
+                                <li>Examples: fish, unsalted seeds, turkey, peas
+                            </ul>
+                        </p>
+                        <a href="https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/eating-nutrition" id="Choose and prepare foods with less salt and sodium">Read More</a>
+                    </div>
+                    <div class="col mb-5 h-100">
+                        <h2> Foods low in Protein</h2>
+                        <p class="mb-0">
+                            <ul>
+                                <li>Fruits: Apples, Pears, Bananas
+                                <li>Vegetables: Tomatoes, Peppers, Broccoli
+                                <li>Grains: Rice, Oats, Pasta
+                            </ul>
+                        </p>
+                        <a href="https://www.kidney.org/atoz/content/managing-blood-sugar-for-kidney-health">Read More</a>
+                    </div>
+                    <div class="col mb-5 mb-md-0 h-100">
+                        <h2>Foods low in Potassium</h2>
+                        <p class="mb-0">
+                            <ul>
+                                <li>Cauliflower
+                                <li>Bread
+                                <li>Beans
+                                <li>Blackberries
+                            </ul>
+                        </p>
+                        <a href="http://www.davita.com/diet-nutrition/eating-out-guides">Read More</a>
+                    </div>
+                    <div class="col h-100">
+                        <h2>Foods low in Phosphorus</h2>
+                        <p class="mb-0">
+                            <ul>
+                                <li>Fresh Fruits and Vegetables
+                                <li>Rice milk (unenriched)
+                                <li>Breads
+                                <li>Fish
+                            </ul>
+                            </p>
+                            <a href="https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/eating-nutrition" id="Choose and prepare foods with less salt and sodium">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

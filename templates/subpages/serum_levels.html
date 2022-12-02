@@ -5,38 +5,57 @@
 {% load crispy_forms_tags %}
 <!-- Trends over time (daily, weekly, monthly) -->
 <!-- Header -->
-<header class="py-5">
-    <div class="container px-5">
+<header >
+<!--    <div class="container px-5">
         <div class="row justify-content-center">
             <div class="col-lg-8 col-xxl-6">
                 <div class="text-center my-5">
-                    <h1 class="fw-bolder mb-3">Our mission is to make dietary tracking easier for those with stage 3/4 chronic kidney disease.</h1>
-                    <p class="lead fw-normal text-muted mb-4">kDIET is here to help provide an easy way to input food and get real time data of food levels as well as recommendations to help you preserve your kidney</p>
-                    <a class="btn btn-primary btn-lg" href={% url 'faq' %}>Read our story</a>
+                    <h1 class="fw-bolder mb-3">Serum Levels</h1>
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- this will be the link to our chart -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>r
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 </header>
 
 <!-- serum levels form -->
 <div class = "border p-3 shadow">
-    <h4>Add Serum Levels</h4>
+    <h5>Add Serum Levels</h5>
     <hr>
     <form method="POST">
       <br>
         {% csrf_token %}
-        {{ form | crispy }}
-        <input type="hidden" id="username" name="username" value="{{user.username}}">
         <br>
-        <input class = 'btn btn-success btn-block' type='submit' value = 'Add'>
+
+        <label for='results_date'>Results Date:</label>
+        <input type="date" name='results_date' id='results_date'><br><br>
+
+        <label for='potassium_level'>Potassium Level:</label>
+        <input type="floatformat" name='potassium_level' id='potassium_level'><br><br>
+
+        <label for='phosphorus_level'>Phoshorus Level:</label>
+        <input type="floatformat" name='phosphorus_level' id='phosphorus_level'><br><br>
+
+        <label for='sodium_level'>Sodium Level:</label>
+        <input type="number" name='sodium_level' id='sodium_level'><br><br>
+
+        <label for='creatinine_level'>Creatinine Level:</label>
+        <input type="floatformat" name='creatinine_level' id='creatinine_level'><br><br>
+
+        <label for='albumin_level'>Albumin Level:</label>
+        <input type="floatformat" name='albumin_level' id='albumin_level'><br><br>
+
+        <label for='blood_sugar_level'>Blood Sugar Level:</label>
+        <input type="number" name='blood_sugar_level' id='blood_sugar_level'><br><br>
+        
+      
+        <input class = 'class="btn btn-primary' type='submit' value = 'Add'>
     </form>
 </div>
 
 <!-- blood sugar visualization section -->
-<canvas id="myChart" width="400" height="400"></canvas>
+<canvas id="myChart" width="10" height="3"></canvas>
 <script>
 var ctx = document.getElementById("myChart").getContext("2d");
     
@@ -53,7 +72,7 @@ var ctx = document.getElementById("myChart").getContext("2d");
         data: [{% for data in data %}{{data.phosphorus_level}},{% endfor %}],
         lineTension: 0,
         fill: false,
-        borderColor: 'blue'
+        borderColor: 'DodgerBlue'
       };
     
     var dataThird = {
@@ -61,18 +80,26 @@ var ctx = document.getElementById("myChart").getContext("2d");
         data: [{% for data in data %}{{data.sodium_level}},{% endfor %}],
         lineTension: 0,
         fill: false,
-        borderColor: 'green'
+        borderColor: 'Lime'
       };
     
     var dataFourth = {
-        label: "Calcium levels",
-        data: [{% for data in data %}{{data.calcium_level}},{% endfor %}],
+        label: "Creatinine levels",
+        data: [{% for data in data %}{{data.creatinine_level}},{% endfor %}],
         lineTension: 0,
         fill: false,
-        borderColor: 'yellow'
-      };
+        borderColor: 'DeepPink'
+    }
     
     var dataFifth = {
+        label: "Albumin levels",
+        data: [{% for data in data %}{{data.albumin_level}},{% endfor %}],
+        lineTension: 0,
+        fill: false,
+        borderColor: 'cyan'
+      };
+    
+    var dataSixth = {
         label: "Blood Sugar levels",
         data: [{% for data in data %}{{data.blood_sugar_level}},{% endfor %}],
         lineTension: 0,
@@ -82,9 +109,8 @@ var ctx = document.getElementById("myChart").getContext("2d");
     
     var lineChart = {
       labels: [{% for data in data %}'{{data.results_date}}',{% endfor %}],
-      datasets: [dataFirst, dataSecond, dataThird, dataFourth, dataFifth]
+      datasets: [dataFirst, dataSecond, dataThird, dataFourth, dataFifth, dataSixth]
     };
-    
     var chartOptions = {
       legend: {
         display: true,
@@ -103,4 +129,6 @@ var ctx = document.getElementById("myChart").getContext("2d");
     });
     
 </script>
+
+
 {% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="text-left">
+        <br><br>
+        <h2 class="section-heading text-uppercase">Import Nutrients</h2>
+    </div>
+    <br>
+    <form name="nutrients_form" method="post" action="{% url 'importNutrients' %}">
+        {% csrf_token %}
+        <div class="form-floating mb-3">
+            <input class="form-control" id="date" name = "date" type="date" placeholder="Enter the date..." data-sb-validations="required" value="{{foodEnt.date}}"/>
+            <label for="date">Date:</label>
+        </div>
+        <!-- Meal type input -->
+        <div>
+            <div>
+                <h5>Select Meal Type:</h5>
+                <select name="meal_type" id="meal_type">
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="snack">Snack</option>
+                    <option value="water">Water</option>
+                </select><br><br>
+            </div>  
+        </div>   
+        <br><br>
+        <label for='name'>Food Name: </label><input type='text' name='name' id="name"></input><br><br>
+        <label for='sodium'>Sodium: </label><input type="number" name="sodium" id="sodium"></input><br><br>
+        <label for='protein'>Protein: </label><input type='number' name='protein' id="protein"></input><br><br>
+        <label for='water'>Water: </label><input type='number' name='water' id="water"></input><br><br>
+        <label for='potassium'>Potassium: </label><input type='number' name='potassium' id="potassium"></input><br><br>
+        <label for='phosphorus'>Phosphorus: </label><input type='number' name='phosphorus' id="phosphorus"></input><br><br>
+        <!-- save user and request user-->
+        <button class="btn btn-primary" type="submit" >Submit</button>
+        <br><br><br><br><br><br>        <br><br><br><br><br><br>
+
+
+    </form>
+</div>    
+
+
+
+{% endblock %}

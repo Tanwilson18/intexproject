@@ -46,7 +46,7 @@ class user_comorbidity(models.Model):
         ]
 
     def __str__(self):
-        return (self.username, self.comorbidity_id)
+        return (f'{self.username}-{self.comorbidity_id}')
 
 
 class food_diary(models.Model):
@@ -59,11 +59,11 @@ class food_diary(models.Model):
         db_table = 'food_diary'
 
     def __str__(self):
-        return (self.date, self.username)
+        return (f'{self.date}, {self.username}')
 
 
 class food(models.Model):
-    entry_id = models.BigAutoField(primary_key=True)
+    entry_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=80)
     mg_sodium = models.FloatField()
     g_protein = models.FloatField()
@@ -75,7 +75,7 @@ class food(models.Model):
         db_table = 'food'
 
     def __str__(self):
-        return (self.entry_id, self.name, self.mg_sodium, self.g_protein, self.l_water, self.mg_potassium, self.mg_phosphorus)
+        return (f'{self.entry_id}')
 
 
 class food_diary_entry(models.Model):
@@ -92,7 +92,7 @@ class food_diary_entry(models.Model):
 
     def __str__(self):
         # trying to return all values
-        return (self.date, self.username, self.entry_id, self.meal_type)
+        return (f'{self.date}, {self.username}, {self.entry_id}, {self.meal_type}')
 
 
 # class micronutrient_info(models.Model):
@@ -127,4 +127,4 @@ class serum_levels(models.Model):
 
     def __str__(self):
         # returning the name of the constraint
-        return (self.username)
+        return str(self.username)

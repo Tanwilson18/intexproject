@@ -1,0 +1,53 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="text-left">
+        <br><br>
+        <h2 class="section-heading text-uppercase">Edit Food Information</h2>
+    </div>
+    <br>
+    <form name="form" method="post" action="{% url 'editFood' %}">
+        {% csrf_token %}
+        
+        <input type="hidden" id="entry_id" name="entry_id" value="{{entry_id}}">
+        <input  type="hidden" id="username" name="username" value="{{username}}">
+        <h5>Select Date of Meal:</h5>
+        <div class="form-floating mb-3">
+            <input class="form-control" id="date" name = "date" type="date" placeholder="Enter the date..." data-sb-validations="required" value="{{foodEnt.date}}"/>
+            <label for="date">Date:</label>
+        </div>
+        <!-- Meal type input -->
+        <div>
+            <h5>Select Meal Type:</h5>
+            {% comment %} <select name="meal_type" id="meal_type" value="{{foodEnt.meal_type}}">
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+                <option value="water">Water</option>
+            </select><br><br> {% endcomment %}
+            <input type="radio" id="breakfast" name="meal_type" value="breakfast">
+            <label for="breakfast">Breakfast</label><br>
+            <input type="radio" id="lunch" name="meal_type" value="lunch">
+            <label for="lunch">Lunch</label><br>
+            <input type="radio" id="dinner" name="meal_type" value="dinner">
+            <label for="dinner">Dinner</label><br>
+            <input type="radio" id="snack" name="meal_type" value="snack">
+            <label for="snack">Snack</label><br>
+            <input type="radio" id="water" name="meal_type" value="water">
+            <label for="water">Water</label><br>
+        </div>   
+        <br><br>
+
+        <button class="btn btn-primary" type="submit" >Update</button>
+        <br><br><br><br><br><br>        <br><br><br><br><br><br>
+
+
+    </form>
+</div>    
+
+
+
+{% endblock %}

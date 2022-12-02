@@ -7,8 +7,8 @@ from django.contrib.auth import login, authenticate, logout  # add this
 from django.contrib.auth.forms import AuthenticationForm  # add this
 from .models import serum_levels
 import pip._vendor.requests as requests
-from .formserumlevels import serum_levels_form
-from .models import kdiet_user, food
+from .models import kdiet_user, food, food_diary, food_diary_entry
+from datetime import datetime
 import json
 
 # Create your views here.
@@ -19,40 +19,87 @@ def indexPageView(request):
 
 
 def serumLevelPageView(request):
-    data = serum_levels.objects.all()
-    if request.method == 'POST':
-        form = serum_levels_form(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/serum_levels')
-    else:
-        form = serum_levels_form()
+    variable = request.user
+
+    data = serum_levels.objects.filter(username=variable.username)
     context = {
         'data': data,
-        'form': form,
     }
+    if request.method == 'POST':
+
+        variable = request.user
+        varibale2 = kdiet_user.objects.get(username=variable.username)
+
+        user_serum = serum_levels()
+
+        user_serum.username = varibale2
+        user_serum.results_date = request.POST['results_date']
+        user_serum.potassium_level = request.POST['potassium_level']
+        user_serum.phosphorus_level = request.POST['phosphorus_level']
+        user_serum.sodium_level = request.POST['sodium_level']
+        user_serum.creatinine_level = request.POST['creatinine_level']
+        user_serum.albumin_level = request.POST['albumin_level']
+        user_serum.blood_sugar_level = request.POST['blood_sugar_level']
+
+        user_serum.save()
+
     return render(request, 'subpages/serum_levels.html', context)
 
 
 def trackerPageView(request):
+    # query from food_diary entry to grab the user and entry_id
+    user = request.user
+    data1 = food_diary_entry.objects.filter(
+        username=user.username, date=food_diary.objects.get(date=datetime.today()))
+    # query_entry = food.objects.get(entry_id=entry_diary)
+    # print(query_entry)
+    sodium = 0
+    protein = 0
+    water = 0
+    potassium = 0
+    phosphorus = 0
+    water = 0
+
+    for data in data1:
+        print('for loop start')
+        # .get(entry_id=data1.entry_id)
+        food1 = food.objects.get(entry_id=data.entry_id.entry_id)
+        print(food1)
+        sodium += food1.mg_sodium
+        protein += food1.g_protein * 1000
+        potassium += food1.mg_potassium
+        phosphorus += food1.mg_phosphorus
+        water += food1.l_water * 1000
+        print('for loop end')
+
+    person = kdiet_user.objects.get(username=request.user.username)
+    if person.sex == 'male':
+        rwater = 3700
+    else:
+        rwater = 2700
+
     nutrient_list = ["Potassium, K", "Water",
                      "Protein", "Sodium, Na", "Phosphorus, P"]
     # foodType = None
     # foodType = request.POST.get("foodGroups")
-    search = None
-    search = request.POST.get("SearchFood")
-    parameters = {
-        'api_key': '9aSh1S0uTOlVQKP7ZDzmnjgGWYDfOmzK5RnZxcxQ',
-        'query': search,
-        # 'dataType': 'Foundation'  # foodType if we decide to do that
-    }
-    if search != None:
+    if request.method == "POST":
+        search = request.POST["SearchFood"]
+        parameters = {
+            'api_key': '9aSh1S0uTOlVQKP7ZDzmnjgGWYDfOmzK5RnZxcxQ',
+            'query': search,
+            # 'dataType': 'Foundation'  # foodType if we decide to do that
+        }
+
         response = requests.get(
             "https://api.nal.usda.gov/fdc/v1/foods/search", params=parameters)
 
         data = response.json()
         food_dict = {}
         if len(data['foods']) == 0:
+            context = {
+                'totals': [sodium, protein, water, potassium, phosphorus],
+                'rwater': rwater,
+            }
             return render(request, 'subpages/tracker.html')
         for i in range(10):
             # for i in range(len(data["foods"])):
@@ -68,10 +115,10 @@ def trackerPageView(request):
 
                     if 'value' in data['foods'][i]['foodNutrients'][j].keys():
                         value = data['foods'][i]['foodNutrients'][j]['value']
-                        #unit = data['foods'][i]['foodNutrients'][j]['unitName']
+                        # unit = data['foods'][i]['foodNutrients'][j]['unitName']
                     else:
                         value = 0
-                        #unit = 0
+                        # unit = 0
                     food_dict[food_name][nutrient_name] = [value]  # , unit]
 
         nutrients = []
@@ -80,54 +127,201 @@ def trackerPageView(request):
             for key in food_dict[i]:
                 # if key == "Water":
                 #    food_dict[i][key][1] = 'mL'
-                nutrientValue = food_dict[i][key][0]
-                #nutrientMeasure = food_dict[i][key][1]
+                nutrientValue = food_dict[i][key]  # [0]
+                # nutrientMeasure = food_dict[i][key][1]
                 nutrients.append(key)
                 nutrientValues = {key: nutrientValue}
-                #nutrientMeasures = {key: nutrientMeasure}
+                # nutrientMeasures = {key: nutrientMeasure}
 
-            context = {
-                'foods': food_dict,
-                'nutrients': nutrients,
-                'nutrientValues': nutrientValues,
-                # 'nutrientMeasure': nutrientMeasures,
-                'list': nutrients
-            }
+        context = {
+            'foods': food_dict,
+            'nutrients': nutrients,
+            'nutrientValues': nutrientValues,
+            # 'nutrientMeasure': nutrientMeasures,
+            'list': nutrients,
+            'totals': [sodium, protein, potassium, phosphorus, water],
+            'rwater': 3200,
+        }
 
         return render(request, 'subpages/tracker.html', context)
     else:
-        return render(request, 'subpages/tracker.html')
+        context = {
+            'totals': [sodium, protein, potassium, phosphorus, water],
+            'rwater': rwater,
+        }
+        return render(request, 'subpages/tracker.html', context)
+
+# follow this link to learn about django messages
+# https://ordinarycoders.com/blog/article/django-messages-framework
+# "it'll be fun" they said
 
 
 def addFoodPageView(request):
+    print('yeah')
+    if request.method == 'POST':
+        # create object food, assign attributes from post method
+        foodItem = food()
+        foodItem.name = request.POST.get('foodName')
+        foodItem.mg_sodium = request.POST.get('sodium', 0)
+        foodItem.g_protein = request.POST.get('protein', 0)
+        foodItem.l_water = request.POST.get('water', 0)
+        foodItem.mg_potassium = request.POST.get('potassium', 0)
+        foodItem.mg_phosphorus = request.POST.get('phosphorus', 0)
+        foodItem.save()
+        print(foodItem.name)
+
+        z_user = request.user
+        username = z_user.username
+
+        # username = kdiet_user.objects.get(username=uname)
+        date = request.POST.get('date')
+        if not food_diary.objects.filter(date=date, username=username).exists():
+
+            variable = request.user
+            varibale2 = kdiet_user.objects.get(username=variable.username)
+
+            foodDiary = food_diary()
+            foodDiary.date = date
+            foodDiary.username = varibale2
+            foodDiary.save(force_insert=True)
+            print(foodDiary.date)
+        else:
+            foodDiary = food_diary.objects.get(date=date, username=username)
+
+        foodEntry = food_diary_entry()
+
+        foodEntry.date = foodDiary
+        foodEntry.username = foodDiary.username
+        foodEntry.entry_id = foodItem
+        foodEntry.meal_type = request.POST.get('meal_type')
+        foodEntry.save(force_insert=True)
+        print(foodEntry.username)
+        return render(request, 'subpages/tracker.html')
+
     nutrients = ""
     nutrients_dict = {}
     foodName = request.GET.get("foodName")
     nutrients = request.GET.get(foodName+"-nutrients")
-    mealType = request.POST.get('mealtype')
-    # date = request.POST.get('date')
+    # mealType = request.POST.get('mealtype')
 
     if nutrients is None:
         pass
     else:
         nutrients = nutrients.replace('\'', '\"')
         nutrients_dict = json.loads(nutrients)
+        if 'Water' in nutrients_dict:
+            water = nutrients_dict['Water'][0]
+        else:
+            water = 0
+        if 'Potassium, K' in nutrients_dict:
+            potassium = nutrients_dict['Potassium, K'][0]
+        else:
+            potassium = 0
+        if 'Protein' in nutrients_dict:
+            protein = nutrients_dict['Protein'][0]
+        else:
+            protein = 0
+        if 'Sodium, Na' in nutrients_dict:
+            sodium = nutrients_dict['Sodium, Na'][0]
+        else:
+            sodium = 0
+        if 'Phosphorus, P' in nutrients_dict:
+            phosphorus = nutrients_dict['Phosphorus, P'][0]
+        else:
+            phosphorus = 0
+
         test = json.dumps(nutrients_dict, indent=4)
         print(test)
+        print(water)
+        print(potassium)
+        print(phosphorus)
+        print(protein)
+        print(sodium)
+
+        # create entry in food table
 
     context = {
         'foodName': foodName,
-        'nutrients': nutrients_dict,
-        'mealType': mealType
+        # 'nutrients': nutrients_dict,
+        # 'mealType': mealType,
+        'water': water,
+        'potassium': potassium,
+        'protein': protein,
+        'sodium': sodium,
+        'phosphorus': phosphorus,
+        'requestType': request.method
     }
 
-    # if request.method == "Post":
-    #     foodItem = food()
-    #     foodItem.name = request.GET.get('foodName')
-
-    #     foodItem.save()
-
     return render(request, 'subpages/addFood.html', context)
+
+
+def showFoodPageView(request):
+    variable = request.user
+    entries_data = food_diary_entry.objects.filter(username=variable.username)
+
+    context = {
+        "foodEntries": entries_data
+    }
+    return render(request, 'subpages/showFood.html', context)
+
+
+def editFoodPageView(request):
+    if request.method == "POST":
+        k_user = request.user
+        finduser = kdiet_user.objects.filter(
+            username=k_user.username)
+        z_user = kdiet_user(username=finduser)
+
+        # variable = food_diary_entry.objects.filter(username=k_user.username)
+        if request.POST.get('meal_type') != None:
+            pass
+        else:
+            food_id = request.POST.get("entry_id")
+            foodInstance = food.objects.get(entry_id=food_id)
+            foodEntry = food_diary_entry.objects.get(entry_id=foodInstance)
+            foodEntry.entry_id = foodInstance
+            foodUser = foodEntry.username
+            context = {
+                "username": foodUser,
+                "entry_id": foodInstance
+            }
+            return render(request, 'subpages/editFood.html', context)
+
+        # foodEntry.meal_type = request.POST.get("meal_type")
+        if request.POST.get('meal_type') == None:
+            pass
+        else:
+            # foodEntry.username = variable
+            food_id = request.POST.get("entry_id")
+            foodInstance = food.objects.get(entry_id=food_id)
+            foodEntry = food_diary_entry.objects.get(entry_id=foodInstance)
+            foodEntry.entry_id = foodInstance
+            foodUser = foodEntry.username
+            meal_type = request.POST.get('meal_type')
+
+            # set values
+            foodEntry.meal_type = meal_type
+
+            date = request.POST.get('date')
+            if not food_diary.objects.filter(date=date, username=z_user).exists():
+
+                variable = request.user
+                varibale2 = kdiet_user.objects.get(username=variable.username)
+
+                foodDiary = food_diary()
+                foodDiary.date = date
+                foodDiary.username = varibale2
+                foodDiary.save(force_insert=True)
+                print(foodDiary.date)
+            else:
+                foodDiary = food_diary.objects.get(date=date, username=z_user)
+            foodEntry.date = foodDiary
+
+            foodEntry.save()
+
+            return render(request, 'subpages/tracker.html')
+    else:
+        return render(request, 'subpages/editFood.html')
 
 
 def addProfilePageView(request):
@@ -181,14 +375,18 @@ def editProfilePageView(request):
         return render(request, 'subpages/editProfile.html')
 
 
-def deleteUserPageView(request, username):
-    data = kdiet_user.objects.get(id=username)
-    data.delete()
-    return indexPageView(request)
+def deleteFoodPageView(request):
+    food_id = request.POST.get("entry_id")
+    foodInstance = food.objects.get(entry_id=food_id)
+    foodEntry = food_diary_entry.objects.get(entry_id=foodInstance)
+    foodEntry.entry_id = foodInstance
+
+    foodEntry.delete()
+    return showFoodPageView(request)
 
 
-def pricingPageView(request):
-    return render(request, 'subpages/pricing.html')
+def suggestionsPageView(request):
+    return render(request, 'subpages/suggestions.html')
 
 
 def bloghomePageView(request):
@@ -197,10 +395,6 @@ def bloghomePageView(request):
 
 def blogpostPageView(request):
     return render(request, 'subpages/blog-post.html')
-
-
-def faqPageView(request):
-    return render(request, 'subpages/faq.html')
 
 
 def register_request(request):
@@ -245,3 +439,61 @@ def logout_request(request):
 
 def profile(request):
     return render(request, 'profile.html')
+
+    # username = k_user.username
+    # entry = food.objects.get(entry_id=entry2)
+
+    # foodEntry = food_diary_entry()
+
+    # entry2 = request.POST['entry_id']
+    # foodEntry.meal_type = request.POST.get('meal_type')
+    # foodEntry.date = request.POST.get('date')
+
+    # entry = food.objects.get(entry_id=entry)
+    # foodEntry = food_diary_entry()
+
+    # foodEntry.entry_id = entry
+
+
+def importNutrientsPageView(request):
+    if request.method == 'POST':
+        # create object food, assign attributes from post method
+        foodItem = food()
+        foodItem.name = request.POST.get('name')
+        foodItem.mg_sodium = request.POST.get('sodium', 0)
+        foodItem.g_protein = request.POST.get('protein', 0)
+        foodItem.l_water = request.POST.get('water', 0)
+        foodItem.mg_potassium = request.POST.get('potassium', 0)
+        foodItem.mg_phosphorus = request.POST.get('phosphorus', 0)
+        foodItem.save()
+        print(foodItem.name)
+
+        z_user = request.user
+        username = z_user.username
+
+        # username = kdiet_user.objects.get(username=uname)
+        date = request.POST.get('date')
+        if not food_diary.objects.filter(date=date, username=username).exists():
+
+            variable = request.user
+            varibale2 = kdiet_user.objects.get(username=variable.username)
+
+            foodDiary = food_diary()
+            foodDiary.date = date
+            foodDiary.username = varibale2
+            foodDiary.save(force_insert=True)
+            print(foodDiary.date)
+        else:
+            foodDiary = food_diary.objects.get(date=date, username=username)
+
+        foodEntry = food_diary_entry()
+
+        foodEntry.date = foodDiary
+        foodEntry.username = foodDiary.username
+        foodEntry.entry_id = foodItem
+        foodEntry.meal_type = request.POST.get('meal_type')
+        foodEntry.save(force_insert=True)
+        print(foodEntry.username)
+        return render(request, 'subpages/tracker.html')
+
+    return render(request, 'subpages/importNutrients.html')

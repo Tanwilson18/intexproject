@@ -1,0 +1,41 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<br><br>
+<div style="text-align: center; margin-right: 80srem" >
+    <h1><b>Select Food</b></h1>
+</div>
+<div class='container'>
+    
+    {% for foodEnt in foodEntries %}
+    <br>
+    
+    <p>   
+
+            <form name="form" method="post" action="{% url 'editFood' %}">
+                {% csrf_token %}
+                <strong>{{ foodEnt.entry_id.name|title }}</strong> <br> {{ foodEnt.meal_type|title }}, {{ foodEnt.date.date }}
+                <input type="hidden" id="entry_id" name="entry_id" value="{{foodEnt.entry_id}}">
+                <br><br>
+                <button class='btn btn-primary'>Edit</button>
+                <br>
+            </form>
+                <br>
+            <form name="form" method="post" action="{% url 'deleteFood' %}">
+                {% csrf_token %}
+                <button class='btn btn-primary'>Delete</button>
+                <input type="hidden" id="entry_id" name="entry_id" value="{{foodEnt.entry_id}}">
+            </form>
+        
+    </p>
+    
+    {% endfor %}
+
+
+</div>
+
+<br><br><br><br><br><br><br><br><br>
+<br>
+
+
+{% endblock %}
