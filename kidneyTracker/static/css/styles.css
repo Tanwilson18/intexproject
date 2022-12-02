@@ -76,6 +76,8 @@
   }
 }
 
+
+
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
@@ -4906,7 +4908,7 @@ textarea.form-control-lg {
 }
 
 .alert{
-   position: relative;
+  position: relative;
   padding: 1rem 1rem;
   margin-bottom: 1rem;
   border: 1px solid transparent;
@@ -5401,6 +5403,7 @@ textarea.form-control-lg {
   border: 0;
   border-radius: 0.25rem;
   opacity: 0.5;
+  cursor: pointer;
 }
 .btn-close:hover {
   color: #000;

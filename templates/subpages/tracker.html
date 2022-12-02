@@ -56,7 +56,7 @@
                                         {% elif nutrient_name == "Sodium, Na" %}
                                           {{value}} mg
                                         {% elif nutrient_name == "Water" %}
-                                          {{value}} L
+                                          {{value}} mL
                                         {% elif nutrient_name == "Potassium, K" %}
                                           {{value}} mg
                                         {% elif nutrient_name == "Phosphorus, P" %}
@@ -72,6 +72,7 @@
                                   </form>
                                 </ul>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -80,6 +81,7 @@
     </section>
     </main>
     </div>
+    <p>{{alerts}}</p>
     <style
       *{
         margin: 0;
@@ -110,11 +112,17 @@
         border-radius: 20px;
         border: solid 3px white;
         background: white;
-      }>
+      }
+      >
     </style>
   </head>
   <body>
-    
+    <h3 style="text-align: center">Your Meals Today:</h3>
+      <p style="text-align: center; font-size: small">{{alert1}}</p>
+      <p style="text-align: center; font-size: small">{{alert2}}</p>
+      <p style="text-align: center; font-size: small">{{alert3}}</p>
+      <p style="text-align: center; font-size: small">{{alert4}}</p>
+      <p style="text-align: center; font-size: small">{{alert5}}</p>
     <div class="chartCard">
       <div class="chartBox">
         <canvas  id="myChart" width="10" height="3">></canvas>
@@ -144,7 +152,7 @@
                   labels: ['Sodium(mg)', 'Protein(mg)', 'Potassium(mg)', 'Phosphorus(mg)', 'Water(ml)'],
                   
                   datasets: [{
-                      label: 'Daily Values',
+                      label: 'Recommended Values',
                       data: [2300, 600, 3000, 1000, {{rwater}}],
                       backgroundColor: [
                           'rgba(255, 26, 104, 0.2)'
@@ -156,7 +164,7 @@
                       },
                       {
                           label: 'Daily Intake',
-                          data: [{%for data in totals %} {{data}}, {%endfor%}],
+                          data: [{% for data in totals %} {{data}}, {% endfor %}],
                           backgroundColor: [
                               'rgba(54, 162, 235, 0.2)',
                           ],

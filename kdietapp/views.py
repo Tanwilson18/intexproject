@@ -19,6 +19,7 @@ def indexPageView(request):
 
 
 def serumLevelPageView(request):
+    # request the current users information and assign it to variable
     variable = request.user
 
     data = serum_levels.objects.filter(username=variable.username)
@@ -48,35 +49,65 @@ def serumLevelPageView(request):
 
 def trackerPageView(request):
     # query from food_diary entry to grab the user and entry_id
+
     user = request.user
-    data1 = food_diary_entry.objects.filter(
-        username=user.username, date=food_diary.objects.get(date=datetime.today()))
-    # query_entry = food.objects.get(entry_id=entry_diary)
-    # print(query_entry)
-    sodium = 0
-    protein = 0
-    water = 0
-    potassium = 0
-    phosphorus = 0
-    water = 0
-
-    for data in data1:
-        print('for loop start')
-        # .get(entry_id=data1.entry_id)
-        food1 = food.objects.get(entry_id=data.entry_id.entry_id)
-        print(food1)
-        sodium += food1.mg_sodium
-        protein += food1.g_protein * 1000
-        potassium += food1.mg_potassium
-        phosphorus += food1.mg_phosphorus
-        water += food1.l_water * 1000
-        print('for loop end')
-
     person = kdiet_user.objects.get(username=request.user.username)
     if person.sex == 'male':
         rwater = 3700
     else:
         rwater = 2700
+    if food_diary.objects.filter(
+            username=user.username, date=datetime.today()).exists():
+        dates = food_diary.objects.get(
+            username=user.username, date=datetime.today())
+        data1 = food_diary_entry.objects.filter(
+            date=dates)
+
+        sodium = 0
+        protein = 0
+        potassium = 0
+        phosphorus = 0
+        water = 0
+
+        for data in data1:
+            # .get(entry_id=data1.entry_id)
+            food1 = food.objects.get(entry_id=data.entry_id.entry_id)
+            sodium += food1.mg_sodium
+            protein += food1.g_protein * 1000
+            potassium += food1.mg_potassium
+            phosphorus += food1.mg_phosphorus
+            water += food1.l_water
+
+        recommended = [2300, 600, 3000, 1000, rwater]
+
+        alert1 = ''
+        alert2 = ''
+        alert3 = ''
+        alert4 = ''
+        alert5 = ''
+        if sodium > recommended[0]:
+            alert1 = "You've eaten too much sodium! "
+        if protein > recommended[1]:
+            alert2 = "You've eaten too much protein! "
+        if potassium > recommended[2]:
+            alert3 = "You've drank too much potassium! "
+        if phosphorus > recommended[3]:
+            alert4 = "You've eaten too much phosphorus! "
+        if water > recommended[4]:
+            alert5 = "You've drank too much water! "
+            ### do something###
+    else:
+        ### do otherthing###
+        sodium = 0
+        protein = 0
+        potassium = 0
+        phosphorus = 0
+        water = 0
+        alert1 = ''
+        alert2 = ''
+        alert3 = ''
+        alert4 = ''
+        alert5 = ''
 
     nutrient_list = ["Potassium, K", "Water",
                      "Protein", "Sodium, Na", "Phosphorus, P"]
@@ -99,6 +130,11 @@ def trackerPageView(request):
             context = {
                 'totals': [sodium, protein, water, potassium, phosphorus],
                 'rwater': rwater,
+                'alert1': alert1,
+                'alert2': alert2,
+                'alert3': alert3,
+                'alert4': alert4,
+                'alert5': alert5,
             }
             return render(request, 'subpages/tracker.html', context)
         for i in range(10):
@@ -132,7 +168,6 @@ def trackerPageView(request):
                 nutrients.append(key)
                 nutrientValues = {key: nutrientValue}
                 # nutrientMeasures = {key: nutrientMeasure}
-
         context = {
             'foods': food_dict,
             'nutrients': nutrients,
@@ -140,14 +175,23 @@ def trackerPageView(request):
             # 'nutrientMeasure': nutrientMeasures,
             'list': nutrients,
             'totals': [sodium, protein, potassium, phosphorus, water],
-            'rwater': 3200,
+            'rwater': rwater,
+            'alert1': alert1,
+            'alert2': alert2,
+            'alert3': alert3,
+            'alert4': alert4,
+            'alert5': alert5,
         }
-
         return render(request, 'subpages/tracker.html', context)
     else:
         context = {
             'totals': [sodium, protein, potassium, phosphorus, water],
             'rwater': rwater,
+            'alert1': alert1,
+            'alert2': alert2,
+            'alert3': alert3,
+            'alert4': alert4,
+            'alert5': alert5,
         }
         return render(request, 'subpages/tracker.html', context)
 
@@ -157,7 +201,6 @@ def trackerPageView(request):
 
 
 def addFoodPageView(request):
-    print('yeah')
     if request.method == 'POST':
         # create object food, assign attributes from post method
         foodItem = food()
@@ -168,7 +211,6 @@ def addFoodPageView(request):
         foodItem.mg_potassium = request.POST.get('potassium', 0)
         foodItem.mg_phosphorus = request.POST.get('phosphorus', 0)
         foodItem.save()
-        print(foodItem.name)
 
         z_user = request.user
         username = z_user.username
@@ -184,7 +226,6 @@ def addFoodPageView(request):
             foodDiary.date = date
             foodDiary.username = varibale2
             foodDiary.save(force_insert=True)
-            print(foodDiary.date)
         else:
             foodDiary = food_diary.objects.get(date=date, username=username)
 
@@ -195,8 +236,7 @@ def addFoodPageView(request):
         foodEntry.entry_id = foodItem
         foodEntry.meal_type = request.POST.get('meal_type')
         foodEntry.save(force_insert=True)
-        print(foodEntry.username)
-        return render(request, 'subpages/tracker.html')
+        return render(request, 'index.html')
 
     nutrients = ""
     nutrients_dict = {}
@@ -231,12 +271,6 @@ def addFoodPageView(request):
             phosphorus = 0
 
         test = json.dumps(nutrients_dict, indent=4)
-        print(test)
-        print(water)
-        print(potassium)
-        print(phosphorus)
-        print(protein)
-        print(sodium)
 
         # create entry in food table
 
@@ -312,7 +346,6 @@ def editFoodPageView(request):
                 foodDiary.date = date
                 foodDiary.username = varibale2
                 foodDiary.save(force_insert=True)
-                print(foodDiary.date)
             else:
                 foodDiary = food_diary.objects.get(date=date, username=z_user)
             foodEntry.date = foodDiary
@@ -466,7 +499,6 @@ def importNutrientsPageView(request):
         foodItem.mg_potassium = request.POST.get('potassium', 0)
         foodItem.mg_phosphorus = request.POST.get('phosphorus', 0)
         foodItem.save()
-        print(foodItem.name)
 
         z_user = request.user
         username = z_user.username
@@ -482,7 +514,6 @@ def importNutrientsPageView(request):
             foodDiary.date = date
             foodDiary.username = varibale2
             foodDiary.save(force_insert=True)
-            print(foodDiary.date)
         else:
             foodDiary = food_diary.objects.get(date=date, username=username)
 
@@ -493,7 +524,6 @@ def importNutrientsPageView(request):
         foodEntry.entry_id = foodItem
         foodEntry.meal_type = request.POST.get('meal_type')
         foodEntry.save(force_insert=True)
-        print(foodEntry.username)
         return render(request, 'subpages/tracker.html')
 
     return render(request, 'subpages/importNutrients.html')
