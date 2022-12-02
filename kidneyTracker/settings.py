@@ -87,8 +87,19 @@ WSGI_APPLICATION = 'kidneyTracker.wsgi.application'
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 DATABASES = {
-    "default": dj_database_url.config(default=DATABASE_URL, conn_max_age=1800),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "kdiet",
+        "USER": "postgres",
+        "PASSWORD": "xumVn7KsgDWWFz3rUTfv",
+        "HOST": "containers-us-west-98.railway.app",
+        "PORT": 6092,
+    }
 }
+
+# DATABASES = {
+#     "default": dj_database_url.config(default=DATABASE_URL, conn_max_age=1800),
+# }
 
 # LOCAL/OLD DATABASE
 # DATABASES = {
