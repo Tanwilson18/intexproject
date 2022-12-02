@@ -100,7 +100,7 @@ def trackerPageView(request):
                 'totals': [sodium, protein, water, potassium, phosphorus],
                 'rwater': rwater,
             }
-            return render(request, 'subpages/tracker.html')
+            return render(request, 'subpages/tracker.html', context)
         for i in range(10):
             # for i in range(len(data["foods"])):
             if len(data['foods']) < 10 and i >= len(data['foods']):
