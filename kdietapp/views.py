@@ -3,8 +3,8 @@ from django.contrib.auth import login
 from django.contrib import messages
 
 from .forms import NewUserForm
-from django.contrib.auth import login, authenticate, logout  # add this
-from django.contrib.auth.forms import AuthenticationForm  # add this
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import AuthenticationForm
 from .models import serum_levels
 import pip._vendor.requests as requests
 from .models import kdiet_user, food, food_diary, food_diary_entry
@@ -21,7 +21,7 @@ def indexPageView(request):
 def serumLevelPageView(request):
     # request the current users information and assign it to variable
     variable = request.user
-
+    # selects the serum levels for the user
     data = serum_levels.objects.filter(username=variable.username)
     context = {
         'data': data,
@@ -30,9 +30,9 @@ def serumLevelPageView(request):
 
         variable = request.user
         varibale2 = kdiet_user.objects.get(username=variable.username)
-
+        # creates a new serum level result
         user_serum = serum_levels()
-
+        # assigns values
         user_serum.username = varibale2
         user_serum.results_date = request.POST['results_date']
         user_serum.potassium_level = request.POST['potassium_level']
@@ -48,38 +48,37 @@ def serumLevelPageView(request):
 
 
 def trackerPageView(request):
-    # query from food_diary entry to grab the user and entry_id
-
+    # selects current user
     user = request.user
     person = kdiet_user.objects.get(username=request.user.username)
+    # sets respective water values
     if person.sex == 'male':
         rwater = 3700
     else:
         rwater = 2700
+    # if the user has already entered meals for today, this assigns values for their meals for the display
     if food_diary.objects.filter(
             username=user.username, date=datetime.today()).exists():
         dates = food_diary.objects.get(
             username=user.username, date=datetime.today())
         data1 = food_diary_entry.objects.filter(
             date=dates)
-
         sodium = 0
         protein = 0
         potassium = 0
         phosphorus = 0
         water = 0
-
+        # adds daily values
         for data in data1:
-            # .get(entry_id=data1.entry_id)
             food1 = food.objects.get(entry_id=data.entry_id.entry_id)
             sodium += food1.mg_sodium
             protein += food1.g_protein * 1000
             potassium += food1.mg_potassium
             phosphorus += food1.mg_phosphorus
             water += food1.l_water
-
+        # recommended values
         recommended = [2300, 600, 3000, 1000, rwater]
-
+        # alerts are assinged to see if the user has gone over recommended values
         alert1 = ''
         alert2 = ''
         alert3 = ''
@@ -95,9 +94,8 @@ def trackerPageView(request):
             alert4 = "You've eaten too much phosphorus! "
         if water > recommended[4]:
             alert5 = "You've drank too much water! "
-            ### do something###
     else:
-        ### do otherthing###
+        # sets all values to display to zero if there are no values to display
         sodium = 0
         protein = 0
         potassium = 0
@@ -111,21 +109,21 @@ def trackerPageView(request):
 
     nutrient_list = ["Potassium, K", "Water",
                      "Protein", "Sodium, Na", "Phosphorus, P"]
-    # foodType = None
-    # foodType = request.POST.get("foodGroups")
+
     if request.method == "POST":
+        # calls the API to search for food
         search = request.POST["SearchFood"]
         parameters = {
             'api_key': '9aSh1S0uTOlVQKP7ZDzmnjgGWYDfOmzK5RnZxcxQ',
             'query': search,
             # 'dataType': 'Foundation'  # foodType if we decide to do that
         }
-
         response = requests.get(
             "https://api.nal.usda.gov/fdc/v1/foods/search", params=parameters)
-
+        # assigns the values to a dictionary
         data = response.json()
         food_dict = {}
+        # if there is no food in the API that matches the search
         if len(data['foods']) == 0:
             context = {
                 'totals': [sodium, protein, water, potassium, phosphorus],
@@ -138,41 +136,32 @@ def trackerPageView(request):
             }
             return render(request, 'subpages/tracker.html', context)
         for i in range(10):
-            # for i in range(len(data["foods"])):
+            # grabs the data from the API to display
             if len(data['foods']) < 10 and i >= len(data['foods']):
                 break
             food_name = data["foods"][i]["description"]
             food_dict[food_name] = {}
-
             for j in range(len(data["foods"][i]["foodNutrients"])):
                 nutrient_name = data["foods"][i]["foodNutrients"][j]['nutrientName']
-
                 if nutrient_name in nutrient_list:
-
                     if 'value' in data['foods'][i]['foodNutrients'][j].keys():
                         value = data['foods'][i]['foodNutrients'][j]['value']
-                        # unit = data['foods'][i]['foodNutrients'][j]['unitName']
                     else:
                         value = 0
-                        # unit = 0
-                    food_dict[food_name][nutrient_name] = [value]  # , unit]
-
+                    food_dict[food_name][nutrient_name] = [value]
+        # sets nutrient values
         nutrients = []
         nutrientValues = {}
         for i in food_dict:
             for key in food_dict[i]:
-                # if key == "Water":
-                #    food_dict[i][key][1] = 'mL'
-                nutrientValue = food_dict[i][key]  # [0]
-                # nutrientMeasure = food_dict[i][key][1]
+                nutrientValue = food_dict[i][key]
                 nutrients.append(key)
                 nutrientValues = {key: nutrientValue}
-                # nutrientMeasures = {key: nutrientMeasure}
+        # context to return
         context = {
             'foods': food_dict,
             'nutrients': nutrients,
             'nutrientValues': nutrientValues,
-            # 'nutrientMeasure': nutrientMeasures,
             'list': nutrients,
             'totals': [sodium, protein, potassium, phosphorus, water],
             'rwater': rwater,
@@ -183,6 +172,7 @@ def trackerPageView(request):
             'alert5': alert5,
         }
         return render(request, 'subpages/tracker.html', context)
+    # if method != post
     else:
         context = {
             'totals': [sodium, protein, potassium, phosphorus, water],
@@ -194,10 +184,6 @@ def trackerPageView(request):
             'alert5': alert5,
         }
         return render(request, 'subpages/tracker.html', context)
-
-# follow this link to learn about django messages
-# https://ordinarycoders.com/blog/article/django-messages-framework
-# "it'll be fun" they said
 
 
 def addFoodPageView(request):
@@ -211,11 +197,9 @@ def addFoodPageView(request):
         foodItem.mg_potassium = request.POST.get('potassium', 0)
         foodItem.mg_phosphorus = request.POST.get('phosphorus', 0)
         foodItem.save()
-
+        # user info
         z_user = request.user
         username = z_user.username
-
-        # username = kdiet_user.objects.get(username=uname)
         date = request.POST.get('date')
         if not food_diary.objects.filter(date=date, username=username).exists():
 

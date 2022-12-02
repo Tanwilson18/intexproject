@@ -8,7 +8,7 @@
         <h2 class="section-heading text-uppercase">Edit Food Information</h2>
     </div>
     <br>
-    <form name="form" method="post" action="{% url 'editFood' %}">
+    <form name="form" method="post" action="{% url 'index' %}">
         {% csrf_token %}
         
         <input type="hidden" id="entry_id" name="entry_id" value="{{entry_id}}">
