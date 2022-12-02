@@ -1,1 +1,1 @@
-web: python manage.py migrate && gunicorn KidneyTracker.wsgi
+web: python manage.py migrate && gunicorn kidneyTracker.wsgi
